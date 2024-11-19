@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import org.akrck02.skyleriearts.core.addFileToResources
 import org.akrck02.skyleriearts.ui.drag.DragComposable
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -25,27 +26,44 @@ fun App() {
     MaterialTheme(
         colors = getSystemThemeColors()
     ) {
-
         val systemColors = getSystemThemeColors()
         Box(
             modifier = Modifier.background(systemColors.background).fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
+
                 Text(
                     text = "Hi Skylerie!",
                     color = systemColors.primary,
                     fontSize = 2.em,
                     modifier = Modifier.padding(20.dp)
                 )
-                DragComposable("Drag your images here")
+
+                DragComposable(
+                    text = "Drag your images here",
+                    onDrag = { e -> addFileToResources(e) },
+                    onFileAdded = { e -> println(e) }
+                )
+
                 Button(onClick = { }) {
                     Text("Upload")
                 }
+
+//                Row {
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                    Text("image", modifier = Modifier.padding(4.dp))
+//                }
             }
         }
     }
