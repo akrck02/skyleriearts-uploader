@@ -6,6 +6,11 @@ plugins {
     alias(libs.plugins.composeCompiler)
 }
 
+repositories {
+    google()
+    mavenCentral()
+}
+
 kotlin {
     jvm("desktop")
 
@@ -23,6 +28,7 @@ kotlin {
             implementation(compose.material3)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

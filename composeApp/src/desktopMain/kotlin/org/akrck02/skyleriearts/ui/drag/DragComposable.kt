@@ -25,14 +25,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
-import androidx.compose.ui.draganddrop.awtTransferable
+import androidx.compose.ui.draganddrop.DragData
+import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
-import java.awt.datatransfer.DataFlavor
-import java.awt.datatransfer.Transferable
 import java.io.File
+import java.net.URLDecoder
 
 /***
  * Composable for File Drag and Drop
@@ -60,26 +60,23 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
             override fun onDrop(event: DragAndDropEvent): Boolean {
 
                 // Get transferable data and handle it
-                val result = onDrag(event.awtTransferable.let(getResourceAsText()))
-                result?.let {
-                    onFileAdded(result)
-                    return true
+                val fileList = event.dragData() as DragData.FilesList
+                fileList.readFiles().forEach { url ->
+
+                    if (url.startsWith("file:").not()) {
+                        return@forEach
+                    }
+
+                    val newUrl = decode(url.removePrefix("file:"))
+                    val result = onDrag(newUrl)
+                    result?.let {
+                        onFileAdded(result)
+                    }
                 }
 
-                return false
+                return true
             }
 
-
-            /**
-             * Get the resource data as text
-             */
-            private fun getResourceAsText(): (Transferable) -> String = {
-                if (it.isDataFlavorSupported(DataFlavor.stringFlavor))
-                    it.getTransferData(DataFlavor.stringFlavor) as String
-                else
-                    it.transferDataFlavors.first().humanPresentableName
-
-            }
         }
     }
 
@@ -106,6 +103,7 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
 
 }
 
+fun decode(url: String): String = URLDecoder.decode(url, "UTF-8")
 
 /**
  * Text icon composable

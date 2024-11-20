@@ -29,7 +29,7 @@ import org.akrck02.skyleriearts.ui.drag.DragComposable
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 
 @Composable
-fun MainView() {
+fun MainView(onImageClick: (ImageData) -> Unit) {
     MaterialTheme(
         colors = getSystemThemeColors()
     ) {
@@ -43,7 +43,7 @@ fun MainView() {
             verticalArrangement = Arrangement.Center
         ) {
             UploadSection(systemColors, images)
-            ImageList(images)
+            ImageList(images, onImageClick)
         }
     }
 
@@ -82,7 +82,7 @@ private fun UploadSection(
 }
 
 @Composable
-private fun ImageList(images: SnapshotStateList<ImageData>) {
+private fun ImageList(images: SnapshotStateList<ImageData>, onImageClick: (ImageData) -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(220.dp),
         modifier = Modifier.padding(40.dp)
@@ -93,7 +93,7 @@ private fun ImageList(images: SnapshotStateList<ImageData>) {
                 modifier = Modifier.padding(5.dp)
                     .size(200.dp)
                     .clickable {
-                        // Text(it.name)
+                        onImageClick(it)
                     }
             )
         }
