@@ -1,10 +1,8 @@
 package org.akrck02.skyleriearts.ui.drag
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -13,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Colors
 import androidx.compose.material.Icon
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Image
@@ -27,10 +26,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draganddrop.DragAndDropEvent
 import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.awtTransferable
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.ui.theme.defaultRoundedShape
+import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.Transferable
@@ -42,7 +40,7 @@ import java.io.File
  * @param onDrag Function to execute on drag
  * @param onFileAdded Function to execute on file added
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) -> Unit) {
 
@@ -85,62 +83,29 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
         }
     }
 
-    DragAndDrop(showTargetBorder, dragAndDropTarget, text)
-
-}
-
-@Composable
-private fun DragAndDrop(
-    showTargetBorder: Boolean,
-    dragAndDropTarget: DragAndDropTarget,
-    targetText: String
-) {
     val colors = getSystemThemeColors()
-    Column(
-        modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Surface(
+        shape = DEFAULT_ROUNDED_SHAPE,
+        modifier = Modifier.width(500.dp)
+            .height(300.dp)
+            .padding(30.dp)
+            .dragAndDropTarget(
+                shouldStartDragAndDrop = { true },
+                target = dragAndDropTarget
+            )
     ) {
-        Box(
-            modifier = dragBoxModifier(colors, showTargetBorder, dragAndDropTarget),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TextIconPrimary(colors, targetText, Icons.Outlined.Image)
+            TextIconPrimary(colors, text, Icons.Outlined.Image)
         }
     }
+
+
 }
 
-/**
- * Drag Box Modifier
- * @param colors The app color theme
- * @param dragging If something is being dragged
- * @param dragAndDropTarget The logical target
- */
-@OptIn(ExperimentalFoundationApi::class)
-private fun dragBoxModifier(
-    colors: Colors,
-    dragging: Boolean,
-    dragAndDropTarget: DragAndDropTarget
-): Modifier {
-
-    return Modifier.height(300.dp)
-        .width(600.dp)
-        .clip(defaultRoundedShape)
-        .background(colors.surface)
-        .padding(20.dp)
-        .then(
-            if (dragging)
-                Modifier.clip(defaultRoundedShape)
-            else
-                Modifier
-        )
-        .dragAndDropTarget(
-            // With "true" as the value of shouldStartDragAndDrop,
-            // drag-and-drop operations are enabled unconditionally.
-            shouldStartDragAndDrop = { true },
-            target = dragAndDropTarget
-        )
-}
 
 /**
  * Text icon composable
