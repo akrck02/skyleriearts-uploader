@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "2.0.20"
 }
 
 repositories {
@@ -28,7 +29,15 @@ kotlin {
             implementation(compose.material3)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
+
+            // serialization
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+
+
+            // uri
+            implementation("com.eygraber:uri-kmp:0.0.18")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -18,3 +18,5 @@ captures
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 composeApp/resources
+
+composeApp/images.json

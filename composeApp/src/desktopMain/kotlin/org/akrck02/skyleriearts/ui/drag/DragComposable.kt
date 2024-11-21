@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Colors
 import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -30,7 +29,6 @@ import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
-import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 import java.io.File
 import java.net.URLDecoder
 
@@ -80,7 +78,6 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
         }
     }
 
-    val colors = getSystemThemeColors()
     Surface(
         shape = DEFAULT_ROUNDED_SHAPE,
         modifier = Modifier.width(500.dp)
@@ -96,7 +93,7 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TextIconPrimary(colors, text, Icons.Outlined.Image)
+            TextIconPrimary(text, Icons.Outlined.Image)
         }
     }
 
@@ -107,25 +104,22 @@ fun decode(url: String): String = URLDecoder.decode(url, "UTF-8")
 
 /**
  * Text icon composable
- * @param colors The app color theme
  * @param text The text to show
  * @param icon The icon to show
  */
 @Composable
-private fun TextIconPrimary(colors: Colors, text: String, icon: ImageVector) {
+private fun TextIconPrimary(text: String, icon: ImageVector) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = icon,
-            tint = colors.primary,
             contentDescription = text,
             modifier = Modifier.size(70.dp).padding(10.dp)
         )
 
         Text(
-            color = colors.primary,
             text = text
         )
     }
