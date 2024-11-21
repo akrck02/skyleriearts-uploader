@@ -3,7 +3,11 @@ package org.akrck02.skyleriearts.ui.view
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -36,16 +40,14 @@ fun HomeView(
     imagesToUpload: SnapshotStateList<ImageData>
 ) {
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Row(
+        modifier = Modifier.fillMaxSize(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         UploadSection(gallery, imagesToUpload)
         ImageList(navController, imagesToUpload)
     }
-
-
 }
 
 @Composable
@@ -53,55 +55,64 @@ private fun UploadSection(
     gallery: SnapshotStateMap<String, ImageData>,
     imagesToUpload: SnapshotStateList<ImageData>
 ) {
-    Text(
-        text = "Hi Skylerie!",
-        color = MaterialTheme.colors.primary,
-        fontSize = 2.em,
-        modifier = Modifier.padding(20.dp)
-    )
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxHeight()
+    ) {
+        Text(
+            text = "Hi Skylerie!",
+            color = MaterialTheme.colors.primary,
+            fontSize = 2.em,
+            modifier = Modifier.padding(20.dp)
+        )
 
-    DragComposable(
-        text = "Drag your images here",
-        onDrag = { path -> addFileToResources(path) },
-        onFileAdded = { file ->
+        DragComposable(
+            text = "Drag your images here",
+            onDrag = { path -> addFileToResources(path) },
+            onFileAdded = { file ->
 
-            // if data exists, get it
-            var data = gallery[file.name]
-            if (data == null) {
-                data = ImageData(
-                    name = file.name,
-                    path = getResourcesPath(file.name),
-                )
+                // if data exists, get it
+                var data = gallery[file.name]
+                if (data == null) {
+                    data = ImageData(
+                        name = file.name,
+                        path = getResourcesPath(file.name),
+                    )
 
-                gallery[data.name] = data
+                    gallery[data.name] = data
+                }
+
+                // if it is a new image to upload, add it
+                if (imagesToUpload.contains(data).not()) {
+                    imagesToUpload.add(data)
+                }
+
+                saveGalleryToFile(gallery)
+
             }
+        )
 
-            // if it is a new image to upload, add it
-            if (imagesToUpload.contains(data).not()) {
-                imagesToUpload.add(data)
-            }
-
-            saveGalleryToFile(gallery)
-
+        Button(onClick = { println(gallery.size) }) {
+            Text("Upload")
         }
-    )
-
-    Button(onClick = { println(gallery.size) }) {
-        Text("Upload")
     }
+
 }
 
 @Composable
 private fun ImageList(navController: NavHostController, images: SnapshotStateList<ImageData>) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(220.dp),
-        modifier = Modifier.padding(40.dp)
+        columns = GridCells.Adaptive(150.dp),
+        modifier = Modifier.padding(PaddingValues(40.dp, 0.dp, 40.dp)).fillMaxSize(.5f)
+            .fillMaxHeight()
     ) {
         items(images, key = { it.name }) {
             ImageCard(
                 imageData = it,
                 modifier = Modifier.padding(5.dp)
-                    .size(200.dp)
+                    .aspectRatio(1f)
+                    .size(150.dp)
                     .clickable {
                         navController.navigate(
                             route = ImageDetailRoute(

@@ -1,5 +1,6 @@
 package org.akrck02.skyleriearts
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -35,13 +36,17 @@ fun App() {
     val imagesToUpload: SnapshotStateList<ImageData> = remember { SnapshotStateList() }
     val navController: NavHostController = rememberNavController()
 
+    gallery.forEach { (k, v) ->
+        imagesToUpload.add(v)
+    }
+
     MaterialTheme(colors = getSystemThemeColors()) {
         NavHost(
             navController = navController,
             startDestination = HomeRoute,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp)
+                .padding(PaddingValues(10.dp, 0.dp, 10.dp))
         ) {
             homeRoute(navController, gallery, imagesToUpload)
             imageDetailRoute(navController, gallery)
