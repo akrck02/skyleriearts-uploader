@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.runtime.Composable
@@ -40,7 +42,12 @@ import java.net.URLDecoder
  */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) -> Unit) {
+fun DragComposable(
+    text: String,
+    onDrag: (String) -> File?,
+    onFileAdded: (File) -> Unit,
+    onFinish: () -> Unit = {}
+) {
 
     var showTargetBorder by remember { mutableStateOf(false) }
     val dragAndDropTarget = remember {
@@ -72,6 +79,7 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
                     }
                 }
 
+                onFinish()
                 return true
             }
 
@@ -86,7 +94,8 @@ fun DragComposable(text: String, onDrag: (String) -> File?, onFileAdded: (File) 
             .dragAndDropTarget(
                 shouldStartDragAndDrop = { true },
                 target = dragAndDropTarget
-            )
+            ),
+        color = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
     ) {
         Column(
             modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
@@ -116,11 +125,13 @@ private fun TextIconPrimary(text: String, icon: ImageVector) {
         Icon(
             imageVector = icon,
             contentDescription = text,
-            modifier = Modifier.size(70.dp).padding(10.dp)
+            modifier = Modifier.size(70.dp).padding(10.dp),
+            tint = MaterialTheme.colors.primary
         )
 
         Text(
-            text = text
+            text = text,
+            color = MaterialTheme.colors.primary
         )
     }
 }

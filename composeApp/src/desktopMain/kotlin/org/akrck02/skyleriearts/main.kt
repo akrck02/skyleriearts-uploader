@@ -22,7 +22,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = stringResource(Res.string.title),
         state = state,
-        resizable = false
+        resizable = true
     ) { App() }
 
 }

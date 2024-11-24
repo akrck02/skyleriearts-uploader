@@ -3,12 +3,15 @@ package org.akrck02.skyleriearts.ui.navigation
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.rounded.Home
+import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
@@ -24,24 +27,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.HomeRoute
+import org.akrck02.skyleriearts.navigation.Route
+import org.akrck02.skyleriearts.navigation.isCurrentRoute
+import org.akrck02.skyleriearts.navigation.navigateSecurely
 
 
 @Composable
 fun NavigationDrawer(
     navController: NavHostController,
-    content: @Composable () -> Unit
+    mini: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
+
+    var minibar: Boolean by remember { mutableStateOf(mini) }
+
     PermanentNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
                 drawerContainerColor = Color(0xFFE9E5DD),
                 drawerTonalElevation = 1.dp,
-                modifier = Modifier.padding(0.dp)
+                modifier = Modifier.padding(0.dp).width(if (minibar) 70.dp else 280.dp)
             ) {
                 Text(
                     "SkylerieArts",
@@ -50,6 +58,10 @@ fun NavigationDrawer(
                     color = MaterialTheme.colors.primary
                 )
 
+//                Button(onClick = { minibar = !minibar }) {
+//                    Icon(imageVector = Icons.Filled.Menu, "")
+//                }
+
                 val colors = NavigationDrawerItemDefaults.colors(
                     selectedContainerColor = Color(0xFFCFC6B4),
                     selectedBadgeColor = MaterialTheme.colors.primary
@@ -57,22 +69,22 @@ fun NavigationDrawer(
 
                 navigationDrawerItem(
                     text = "Home",
-                    icon = Icons.Outlined.Home,
+                    icon = Icons.Rounded.Home,
                     contentDescription = "Home",
-                    selected = true,
                     colors = colors,
                     navigation = navController,
-                    route = HomeRoute
+                    route = HomeRoute,
+                    mini = minibar
                 )
 
                 navigationDrawerItem(
                     text = "Gallery",
-                    icon = Icons.Outlined.Image,
+                    icon = Icons.Rounded.Image,
                     contentDescription = "Gallery",
-                    selected = false,
                     colors = colors,
                     navigation = navController,
-                    route = GalleryRoute
+                    route = GalleryRoute,
+                    mini = minibar
                 )
             }
         },
@@ -83,43 +95,50 @@ fun NavigationDrawer(
 
 @Composable
 private fun navigationDrawerItem(
-    text: String = "",
-    icon: ImageVector,
+    text: String = "Title",
+    icon: ImageVector = Icons.Outlined.Home,
     contentDescription: String = "",
-    selected: Boolean = false,
     colors: NavigationDrawerItemColors = NavigationDrawerItemDefaults.colors(),
     navigation: NavHostController,
-    route: Any
+    route: Route,
+    mini: Boolean = false
 ) {
 
-    var selectedBool = selected
-    var selectedValue: Boolean by remember { mutableStateOf(selectedBool) }
+    var selected: Boolean by remember { mutableStateOf(false) }
+    selected = navigation.isCurrentRoute(route)
 
     NavigationDrawerItem(
         label = {
+
+            if (mini) {
+                return@NavigationDrawerItem
+            }
+
             Text(
                 text = text,
                 modifier = Modifier.padding(PaddingValues(start = 0.dp)),
-                color = if (selectedValue) MaterialTheme.colors.primary else Color(0xFF9A8E75)
+                color = if (selected) MaterialTheme.colors.primary else Color(0xFF9A8E75)
             )
         },
         icon = {
             Icon(
                 imageVector = icon,
                 contentDescription = contentDescription,
-                tint = if (selectedValue) MaterialTheme.colors.onSurface else MaterialTheme.colors.primary
+                tint = if (selected) MaterialTheme.colors.primary else Color(0xFF9A8E75),
+                modifier = if (mini) Modifier.size(40.dp) else Modifier
             )
         },
-        selected = selectedValue,
-        modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp).height(50.dp),
+        selected = selected,
+        modifier = Modifier.padding(
+            start = 10.dp,
+            end = 10.dp,
+            bottom = 5.dp
+        ).height(50.dp),
         colors = colors,
         onClick = {
-            selectedBool = true
-            navigation.navigate(route)
+            navigation.navigateSecurely(route)
         }
     )
 }
 
-@Composable
-fun currentRoute(navController: NavController): Any? =
-    navController.currentBackStackEntryAsState().value?.destination?.route
+

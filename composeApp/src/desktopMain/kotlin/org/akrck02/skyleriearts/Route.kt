@@ -2,6 +2,8 @@ package org.akrck02.skyleriearts
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.navigation.NavGraphBuilder
@@ -23,8 +25,9 @@ import kotlin.reflect.typeOf
 const val DEFAULT_ANIM_SPEED = 1000
 
 fun NavGraphBuilder.homeRoute(
+    navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>,
-    imagesToUpload: SnapshotStateList<ImageData>
+    imagesToShow: SnapshotStateList<ImageData>
 ) {
     composable<HomeRoute>(
         enterTransition = {
@@ -40,7 +43,7 @@ fun NavGraphBuilder.homeRoute(
             )
         }
     ) {
-        HomeView(gallery, imagesToUpload)
+        HomeView(navController, gallery, imagesToShow)
     }
 }
 
@@ -74,15 +77,16 @@ fun NavGraphBuilder.imageDetailRoute(
     composable<ImageDetailRoute>(
         typeMap = mapOf(typeOf<NavigationType>() to AppNavigationType),
         enterTransition = {
-            slideIntoContainer(
-                AnimatedContentTransitionScope.SlideDirection.Down,
-                animationSpec = tween(DEFAULT_ANIM_SPEED)
+            fadeIn(
+                animationSpec = tween(
+                    300,
+                    400
+                )
             )
         },
         exitTransition = {
-            slideOutOfContainer(
-                AnimatedContentTransitionScope.SlideDirection.Up,
-                animationSpec = tween(DEFAULT_ANIM_SPEED)
+            fadeOut(
+
             )
         }
     ) {

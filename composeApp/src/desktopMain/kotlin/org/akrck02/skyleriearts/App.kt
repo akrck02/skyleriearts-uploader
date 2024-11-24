@@ -23,13 +23,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
 
-    val gallery: SnapshotStateMap<String, ImageData> = getCurrentGalleryFromFile()
-    val imagesToUpload: SnapshotStateList<ImageData> = remember { SnapshotStateList() }
     val navController: NavHostController = rememberNavController()
-
-    gallery.forEach { (_, v) ->
-        imagesToUpload.add(v)
-    }
+    val gallery: SnapshotStateMap<String, ImageData> = getCurrentGalleryFromFile()
+    val imagesToShow: SnapshotStateList<ImageData> = remember { SnapshotStateList() }
+    addDatabaseImages(gallery, imagesToShow)
 
     MaterialTheme(colors = getSystemThemeColors()) {
         NavigationDrawer(navController = navController) {
@@ -40,10 +37,21 @@ fun App() {
                     .fillMaxSize()
                     .padding(0.dp)
             ) {
-                homeRoute(gallery, imagesToUpload)
+                homeRoute(navController, gallery, imagesToShow)
                 imageDetailRoute(navController, gallery)
-                galleryRoute(navController, imagesToUpload)
+                galleryRoute(navController, imagesToShow)
             }
+        }
+    }
+}
+
+private fun addDatabaseImages(
+    gallery: SnapshotStateMap<String, ImageData>,
+    imagesToShow: SnapshotStateList<ImageData>
+) {
+    gallery.forEach { (_, v) ->
+        if (imagesToShow.contains(v).not()) {
+            imagesToShow.add(v)
         }
     }
 }

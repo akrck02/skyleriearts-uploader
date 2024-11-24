@@ -23,12 +23,12 @@ fun loadImageFrom(path: String): ImageBitmap {
 /**
  * Add an image file to gallery
  * @param gallery The gallery of photos
- * @param imagesToUpload The images to upload
+ * @param imagesToShow The images to show
  * @return The method to handle the image addition
  */
 fun addImageFileToGallery(
     gallery: SnapshotStateMap<String, ImageData>,
-    imagesToUpload: SnapshotStateList<ImageData>
+    imagesToShow: SnapshotStateList<ImageData>
 ) = { file: File ->
 
     // Get the data.
@@ -46,8 +46,8 @@ fun addImageFileToGallery(
     }
 
     // if it is a new image to upload, add it
-    if (imagesToUpload.contains(data).not()) {
-        imagesToUpload.add(data)
+    if (imagesToShow.contains(data).not()) {
+        imagesToShow.add(data)
     }
 
     saveGalleryToFile(gallery)

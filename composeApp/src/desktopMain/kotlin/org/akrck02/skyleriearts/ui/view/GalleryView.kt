@@ -2,7 +2,6 @@ package org.akrck02.skyleriearts.ui.view
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,14 +18,17 @@ import androidx.navigation.NavHostController
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.card.ImageCard
 
 
 @Composable
 fun GalleryView(navController: NavHostController, images: SnapshotStateList<ImageData>) {
+    val minSize = 150.dp
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(100.dp),
-        modifier = Modifier.padding(PaddingValues(40.dp, 0.dp, 40.dp)).fillMaxWidth(.5f)
+        columns = GridCells.Adaptive(minSize),
+        modifier = Modifier.padding(start = 40.dp, end = 40.dp)
+            .fillMaxWidth(.5f)
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
     ) {
@@ -35,9 +37,9 @@ fun GalleryView(navController: NavHostController, images: SnapshotStateList<Imag
                 imageData = it,
                 modifier = Modifier.padding(5.dp)
                     .aspectRatio(1f)
-                    .size(100.dp)
+                    .size(minSize)
                     .clickable {
-                        navController.navigate(
+                        navController.navigateSecurely(
                             route = ImageDetailRoute(
                                 item = NavigationType(
                                     imageData = it

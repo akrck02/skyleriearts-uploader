@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -18,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.navigation.NavHostController
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.dragMessage
 import kotlinproject.composeapp.generated.resources.hi
@@ -25,28 +25,30 @@ import kotlinproject.composeapp.generated.resources.update
 import org.akrck02.skyleriearts.core.addFileToResources
 import org.akrck02.skyleriearts.core.addImageFileToGallery
 import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.ui.drag.DragComposable
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HomeView(
+    navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>,
-    imagesToUpload: SnapshotStateList<ImageData>
+    imagesToShow: SnapshotStateList<ImageData>
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
-            modifier = Modifier.fillMaxHeight(.996f).fillMaxWidth(),
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            UploadSection(gallery, imagesToUpload)
+            UploadSection(navController, gallery, imagesToShow)
         }
 
-        androidx.compose.material3.LinearProgressIndicator(
-            modifier = Modifier.fillMaxWidth().height(5.dp),
-            color = MaterialTheme.colors.primary,
-            trackColor = MaterialTheme.colors.surface
-        )
+//        androidx.compose.material3.LinearProgressIndicator(
+//            modifier = Modifier.fillMaxWidth().height(5.dp),
+//            color = MaterialTheme.colors.primary,
+//            trackColor = MaterialTheme.colors.surface
+//        )
     }
 
 }
@@ -54,8 +56,9 @@ fun HomeView(
 
 @Composable
 private fun UploadSection(
+    navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>,
-    imagesToUpload: SnapshotStateList<ImageData>
+    imagesToShow: SnapshotStateList<ImageData>
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -72,7 +75,8 @@ private fun UploadSection(
         DragComposable(
             text = stringResource(Res.string.dragMessage),
             onDrag = { path -> addFileToResources(path) },
-            onFileAdded = addImageFileToGallery(gallery, imagesToUpload)
+            onFileAdded = addImageFileToGallery(gallery, imagesToShow),
+            onFinish = { navController.navigate(GalleryRoute) }
         )
 
         Button(onClick = { println(gallery.size) }) {
