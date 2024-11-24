@@ -79,6 +79,8 @@ fun ImageDetailView(
                 description = "Remove",
                 colors = colors,
                 onClick = {
+                    gallery.remove(data.imageData.name)
+                    saveGalleryToFile(gallery)
                     navController.navigateSecurely(GalleryRoute)
                 }
             )
@@ -109,8 +111,6 @@ fun ImageDetailView(
 
         Row(modifier = Modifier.fillMaxSize()) {
             Form(data, imageData)
-
-
             Column(
                 modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
@@ -120,7 +120,6 @@ fun ImageDetailView(
                 projectList.addAll(imageData.projects)
 
                 val projects by remember { mutableStateOf(projectList) }
-
                 chipContainer("Projects") {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(minSize = 100.dp),
