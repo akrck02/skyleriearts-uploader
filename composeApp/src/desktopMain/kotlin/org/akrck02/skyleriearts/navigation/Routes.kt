@@ -7,6 +7,9 @@ import kotlinx.serialization.Serializable
 data object HomeRoute
 
 @Serializable
+data object GalleryRoute
+
+@Serializable
 data class ImageDetailRoute(
     val item: NavigationType
 )

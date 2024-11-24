@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.util
+package org.akrck02.skyleriearts.core
 
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.snapshots.SnapshotStateMap

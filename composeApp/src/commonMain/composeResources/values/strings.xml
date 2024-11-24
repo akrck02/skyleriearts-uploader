@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Skyleriearts - Portfolio editor.</string>
+    <string name="hi">Hi Skylerie!</string>
+    <string name="dragMessage">Drag your images here</string>
+    <string name="update">Update</string>
+</resources>

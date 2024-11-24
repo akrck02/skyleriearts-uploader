@@ -10,6 +10,9 @@ plugins {
 repositories {
     google()
     mavenCentral()
+    maven {
+        setUrl("https://jitpack.io")
+    }
 }
 
 kotlin {
@@ -30,15 +33,17 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            // navigation compose
             implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha10")
 
             // serialization
             implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
-
             // uri
             implementation("com.eygraber:uri-kmp:0.0.18")
+
         }
+
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -58,3 +63,4 @@ compose.desktop {
         }
     }
 }
+

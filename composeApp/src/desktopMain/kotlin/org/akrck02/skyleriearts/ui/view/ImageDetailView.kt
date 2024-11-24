@@ -86,10 +86,9 @@ fun ImageDetailView(
                 onClick = {
 
                     val imageData = gallery[data.imageData.name] ?: data.imageData
+                    gallery.remove(data.imageData.name)
                     imageData.name = imageName
                     imageData.description = imageDescription
-
-                    gallery.remove(data.imageData.name)
                     gallery[imageData.name] = imageData
 
                     saveGalleryToFile(gallery)

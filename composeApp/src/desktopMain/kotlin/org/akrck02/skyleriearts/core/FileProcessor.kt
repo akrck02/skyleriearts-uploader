@@ -5,7 +5,6 @@ import com.eygraber.uri.UriCodec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.akrck02.skyleriearts.model.ImageData
-import org.akrck02.skyleriearts.util.buildMutableStateMap
 import java.io.File
 
 /**
@@ -25,13 +24,16 @@ fun addFileToResources(filepath: String): File? {
         return null
 
     // if the file exists return the file
-    val newFile = File(getResourcesPath(file.name))
+    var newFile = File(getResourcesPath(file.name))
     if (newFile.exists())
         newFile.delete()
 
     // Copy the file and return
-    return file.copyTo(newFile)
+    newFile = file.copyTo(newFile)
 
+    // compress the image
+    compress(newFile.path)
+    return newFile
 }
 
 /**

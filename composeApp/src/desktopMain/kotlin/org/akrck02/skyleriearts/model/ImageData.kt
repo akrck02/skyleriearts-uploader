@@ -3,12 +3,15 @@ package org.akrck02.skyleriearts.model
 import kotlinx.serialization.Serializable
 
 /**
- * Image data for register and parse
+ * This class represents an image uploaded to the portfolio
+ * images may belong to projects and have tags, as well as
+ * a compressed version.
  */
 @Serializable
 class ImageData(
     var name: String,
     val path: String,
+    val minPath: String,
 ) {
     var description: String = ""
     var tags: MutableSet<String> = mutableSetOf()
@@ -20,10 +23,7 @@ class ImageData(
 
         other as ImageData
 
-        if (name != other.name) return false
-        if (path != other.path) return false
-
-        return true
+        return name == other.name
     }
 
     override fun hashCode(): Int {
