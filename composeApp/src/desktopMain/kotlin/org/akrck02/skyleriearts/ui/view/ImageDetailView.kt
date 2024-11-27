@@ -26,9 +26,12 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,99 +67,133 @@ fun ImageDetailView(
     val imageData = gallery[data.imageData.name] ?: data.imageData
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(end = 10.dp),
-            horizontalArrangement = Arrangement.End
+        ControlsBar(gallery, data, navController, imageData)
+        ImageDetailComponent(data, imageData)
+    }
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun ImageDetailComponent(
+    data: NavigationType,
+    imageData: ImageData
+) {
+    Row(modifier = Modifier.fillMaxSize()) {
+        Form(data, imageData)
+        Column(
+            modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
         ) {
 
-            val colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colors.primary
-            )
+            val projectList = mutableListOf<String>()
+            projectList.addAll(imageData.projects)
 
-            iconButton(
-                icon = Icons.Rounded.Delete,
-                description = "Remove",
-                colors = colors,
-                onClick = {
-                    gallery.remove(data.imageData.name)
-                    saveGalleryToFile(gallery)
-                    navController.navigateSecurely(GalleryRoute)
-                }
-            )
+            val projects by remember { mutableStateOf(projectList) }
+            TagContainer(title = "Projects", tags = projects, icons = Icons.Rounded.Interests)
 
-            iconButton(
-                icon = Icons.Rounded.Save,
-                description = "Save",
-                colors = colors,
-                onClick = {
-                    gallery.remove(data.imageData.name)
-                    imageData.name = imageData.name
-                    imageData.description = imageData.description
-                    gallery[data.imageData.name] = imageData
+            val tagList = mutableListOf<String>()
+            tagList.addAll(imageData.tags)
 
-                    saveGalleryToFile(gallery)
-                    navController.navigateSecurely(GalleryRoute)
-                }
-            )
+            val tags by remember { mutableStateOf(tagList) }
+            TagContainer(title = "Tags", tags = tags)
 
-
-            iconButton(
-                icon = Icons.Rounded.Close,
-                description = "Close",
-                colors = colors,
-                onClick = { navController.navigateSecurely(GalleryRoute) }
-            )
         }
+    }
+}
 
-        Row(modifier = Modifier.fillMaxSize()) {
-            Form(data, imageData)
-            Column(
-                modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-            ) {
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun TagContainer(
+    title: String = "Title",
+    tags: MutableList<String>,
+    icons: ImageVector = Icons.Rounded.Tag,
+    contentDescription : String = ""
 
-                val projectList = mutableListOf<String>()
-                projectList.addAll(imageData.projects)
-
-                val projects by remember { mutableStateOf(projectList) }
-                chipContainer("Projects") {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 100.dp),
-                        modifier = Modifier.padding(start = 40.dp, end = 40.dp).fillMaxWidth(),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        items(items = projects, key = { it }) {
-                            Chip(
-                                onClick = {},
-                                colors = ChipDefaults.chipColors(
-                                    backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
-                                ),
-                                modifier = Modifier.padding(end = 10.dp)
-                            ) {
-                                Text(
-                                    it,
-                                    modifier = Modifier.padding(
-                                        start = 10.dp,
-                                        end = 10.dp,
-                                        top = 5.dp,
-                                        bottom = 5.dp
-                                    )
-                                )
-                            }
-                        }
+) {
+    chipContainer(title) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(150.dp),
+            modifier = Modifier.padding(start = 0.dp, end = 0.dp).fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            items(items = tags, key = { it }) {
+                Chip(
+                    onClick = {},
+                    colors = ChipDefaults.chipColors(
+                        backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
+                    ),
+                    modifier = Modifier.padding(end = 10.dp),
+                    leadingIcon = {
+                        Icon(imageVector = icons, contentDescription = contentDescription)
                     }
-
-                }
-
-                var tags by remember { mutableStateOf(imageData.tags) }
-
-                chipContainer("tags") {
-
+                ) {
+                    Text(
+                        it,
+                        modifier = Modifier.padding(
+                            start = 0.dp,
+                            end = 0.dp,
+                            top = 5.dp,
+                            bottom = 5.dp
+                        )
+                    )
                 }
             }
         }
+
+    }
+}
+
+@Composable
+private fun ControlsBar(
+    gallery: SnapshotStateMap<String, ImageData>,
+    data: NavigationType,
+    navController: NavHostController,
+    imageData: ImageData
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(end = 10.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+
+        val colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Transparent,
+            contentColor = MaterialTheme.colors.primary
+        )
+
+        iconButton(
+            icon = Icons.Rounded.Delete,
+            description = "Remove",
+            colors = colors,
+            onClick = {
+                gallery.remove(data.imageData.name)
+                saveGalleryToFile(gallery)
+                navController.navigateSecurely(GalleryRoute)
+            }
+        )
+
+        iconButton(
+            icon = Icons.Rounded.Save,
+            description = "Save",
+            colors = colors,
+            onClick = {
+                gallery.remove(data.imageData.name)
+                imageData.name = imageData.name
+                imageData.description = imageData.description
+                gallery[data.imageData.name] = imageData
+
+                saveGalleryToFile(gallery)
+                navController.navigateSecurely(GalleryRoute)
+            }
+        )
+
+
+        iconButton(
+            icon = Icons.Rounded.Close,
+            description = "Close",
+            colors = colors,
+            onClick = { navController.navigateSecurely(GalleryRoute) }
+        )
     }
 }
 

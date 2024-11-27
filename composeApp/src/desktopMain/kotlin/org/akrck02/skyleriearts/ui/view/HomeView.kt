@@ -43,12 +43,6 @@ fun HomeView(
         ) {
             UploadSection(navController, gallery, imagesToShow)
         }
-
-//        androidx.compose.material3.LinearProgressIndicator(
-//            modifier = Modifier.fillMaxWidth().height(5.dp),
-//            color = MaterialTheme.colors.primary,
-//            trackColor = MaterialTheme.colors.surface
-//        )
     }
 
 }
@@ -79,9 +73,6 @@ private fun UploadSection(
             onFinish = { navController.navigate(GalleryRoute) }
         )
 
-        Button(onClick = { println(gallery.size) }) {
-            Text(stringResource(Res.string.update))
-        }
     }
 }
 

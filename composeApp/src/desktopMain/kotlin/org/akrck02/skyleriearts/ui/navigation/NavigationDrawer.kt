@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
@@ -68,9 +69,9 @@ fun NavigationDrawer(
                 )
 
                 navigationDrawerItem(
-                    text = "Home",
-                    icon = Icons.Rounded.Home,
-                    contentDescription = "Home",
+                    text = "Upload",
+                    icon = Icons.Rounded.Upload,
+                    contentDescription = "Upload",
                     colors = colors,
                     navigation = navController,
                     route = HomeRoute,
