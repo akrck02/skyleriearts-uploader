@@ -10,28 +10,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
-import androidx.compose.material.ButtonColors
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Bookmark
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material.icons.rounded.Tag
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,10 +29,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.navigation.NavHostController
 import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
@@ -52,34 +37,81 @@ import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.card.ImageCard
+import org.akrck02.skyleriearts.ui.control.ControlsBar
+import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.tag.TagContainer
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
-import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 
-@OptIn(ExperimentalMaterialApi::class)
+/**
+ * ImageDetailView
+ */
 @Composable
 fun ImageDetailView(
     navController: NavHostController,
     data: NavigationType,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
-
     val imageData = gallery[data.imageData.name] ?: data.imageData
-
     Column(modifier = Modifier.fillMaxSize()) {
-        ControlsBar(gallery, data, navController, imageData)
+        ControlsBar(getButtonControls(gallery, data, navController, imageData))
         ImageDetailComponent(data, imageData)
     }
 }
 
+/**
+ * Get button controls
+ */
+private fun getButtonControls(
+    gallery: SnapshotStateMap<String, ImageData>,
+    data: NavigationType,
+    navController: NavHostController,
+    imageData: ImageData
+) = listOf(
+    IconButtonBasicData(
+        icon = Icons.Rounded.Delete,
+        description = "Remove",
+
+        onClick = {
+            gallery.remove(data.imageData.name)
+            saveGalleryToFile(gallery)
+            navController.navigateSecurely(GalleryRoute)
+        },
+    ),
+    IconButtonBasicData(
+        icon = Icons.Rounded.Save,
+        description = "Save",
+
+        onClick = {
+            gallery.remove(data.imageData.name)
+            imageData.name = imageData.name
+            imageData.description = imageData.description
+            gallery[data.imageData.name] = imageData
+
+            saveGalleryToFile(gallery)
+            navController.navigateSecurely(GalleryRoute)
+        }
+    ),
+    IconButtonBasicData(
+        icon = Icons.Rounded.Close,
+        description = "Close",
+        onClick = { navController.navigateSecurely(GalleryRoute) }
+    )
+)
+
+/**
+ * Image detail component
+ */
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
 private fun ImageDetailComponent(
     data: NavigationType,
     imageData: ImageData
 ) {
+
+    var showAlert by remember { mutableStateOf(false) }
+
     Row(modifier = Modifier.fillMaxSize()) {
-        Form(data, imageData)
+        ImageDetailForm(data, imageData)
         Column(
             modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -89,152 +121,74 @@ private fun ImageDetailComponent(
             projectList.addAll(imageData.projects)
 
             val projects by remember { mutableStateOf(projectList) }
-            TagContainer(title = "Projects", tags = projects, icons = Icons.Rounded.Interests)
+            TagContainer(
+                title = "Projects",
+                tags = projects,
+                icons = Icons.Rounded.Interests,
+                emptyText = "There are not projects here, feel free to add one.",
+                onAdd = { showAlert = true }
+            )
 
             val tagList = mutableListOf<String>()
             tagList.addAll(imageData.tags)
 
             val tags by remember { mutableStateOf(tagList) }
-            TagContainer(title = "Tags", tags = tags)
+            TagContainer(
+                title = "Tags",
+                tags = tags,
+                emptyText = "There are not tags here, feel free to add one.",
+                onAdd = { showAlert = true }
+            )
 
         }
     }
-}
 
-@Composable
-@OptIn(ExperimentalMaterialApi::class)
-private fun TagContainer(
-    title: String = "Title",
-    tags: MutableList<String>,
-    icons: ImageVector = Icons.Rounded.Tag,
-    contentDescription : String = ""
+    if (showAlert) {
+        AlertDialog(
+            title = { Text("Add tags to ${imageData.name}") },
+            text = { Text("The tags will order your images in the website.") },
+            buttons = {
 
-) {
-    chipContainer(title) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(150.dp),
-            modifier = Modifier.padding(start = 0.dp, end = 0.dp).fillMaxWidth(),
-            verticalArrangement = Arrangement.Top,
-            horizontalArrangement = Arrangement.Start
-        ) {
-            items(items = tags, key = { it }) {
-                Chip(
-                    onClick = {},
-                    colors = ChipDefaults.chipColors(
-                        backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
-                    ),
-                    modifier = Modifier.padding(end = 10.dp),
-                    leadingIcon = {
-                        Icon(imageVector = icons, contentDescription = contentDescription)
-                    }
+                Column(
+                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        it,
-                        modifier = Modifier.padding(
-                            start = 0.dp,
-                            end = 0.dp,
-                            top = 5.dp,
-                            bottom = 5.dp
-                        )
+                    TextField(
+                        value = "Tag",
+                        onValueChange = {}
                     )
                 }
-            }
-        }
 
-    }
-}
+                Row(
+                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { showAlert = false },
+                        modifier = Modifier.padding(end = 10.dp)
+                    ) {
+                        Text("Add")
+                    }
 
-@Composable
-private fun ControlsBar(
-    gallery: SnapshotStateMap<String, ImageData>,
-    data: NavigationType,
-    navController: NavHostController,
-    imageData: ImageData
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(end = 10.dp),
-        horizontalArrangement = Arrangement.End
-    ) {
-
-        val colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = MaterialTheme.colors.primary
-        )
-
-        iconButton(
-            icon = Icons.Rounded.Delete,
-            description = "Remove",
-            colors = colors,
-            onClick = {
-                gallery.remove(data.imageData.name)
-                saveGalleryToFile(gallery)
-                navController.navigateSecurely(GalleryRoute)
-            }
-        )
-
-        iconButton(
-            icon = Icons.Rounded.Save,
-            description = "Save",
-            colors = colors,
-            onClick = {
-                gallery.remove(data.imageData.name)
-                imageData.name = imageData.name
-                imageData.description = imageData.description
-                gallery[data.imageData.name] = imageData
-
-                saveGalleryToFile(gallery)
-                navController.navigateSecurely(GalleryRoute)
-            }
-        )
+                    Button(onClick = { showAlert = false }) {
+                        Text("Cancel")
+                    }
+                }
 
 
-        iconButton(
-            icon = Icons.Rounded.Close,
-            description = "Close",
-            colors = colors,
-            onClick = { navController.navigateSecurely(GalleryRoute) }
+            },
+            onDismissRequest = {},
+            modifier = Modifier.padding(10.dp)
         )
     }
+
 }
 
+/**
+ * Form to edit image details
+ */
 @Composable
-private fun iconButton(
-    colors: ButtonColors,
-    icon: ImageVector,
-    description: String = "",
-    onClick: () -> Unit,
-
-    ) {
-    Button(
-        onClick = onClick,
-        colors = colors,
-        shape = TOTAL_ROUNDED_SHAPE,
-        border = null,
-        elevation = null,
-        modifier = Modifier.width(50.dp),
-    ) {
-        Icon(icon, description)
-    }
-}
-
-@Composable
-private fun chipContainer(title: String, content: @Composable () -> Unit) {
-    Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
-        Text(
-            title,
-            fontSize = 1.8.em,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.primary,
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-        Row {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun Form(
+private fun ImageDetailForm(
     data: NavigationType,
     imageData: ImageData,
 ) {

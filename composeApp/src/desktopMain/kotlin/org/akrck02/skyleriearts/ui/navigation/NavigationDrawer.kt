@@ -1,17 +1,22 @@
 package org.akrck02.skyleriearts.ui.navigation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
@@ -23,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -34,6 +40,8 @@ import org.akrck02.skyleriearts.navigation.HomeRoute
 import org.akrck02.skyleriearts.navigation.Route
 import org.akrck02.skyleriearts.navigation.isCurrentRoute
 import org.akrck02.skyleriearts.navigation.navigateSecurely
+import org.akrck02.skyleriearts.ui.input.IconButton
+import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 
 
 @Composable
@@ -43,7 +51,7 @@ fun NavigationDrawer(
     content: @Composable () -> Unit,
 ) {
 
-    var minibar: Boolean by remember { mutableStateOf(mini) }
+    val minibar: Boolean by remember { mutableStateOf(mini) }
 
     PermanentNavigationDrawer(
         drawerContent = {
@@ -58,10 +66,6 @@ fun NavigationDrawer(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.primary
                 )
-
-//                Button(onClick = { minibar = !minibar }) {
-//                    Icon(imageVector = Icons.Filled.Menu, "")
-//                }
 
                 val colors = NavigationDrawerItemDefaults.colors(
                     selectedContainerColor = Color(0xFFCFC6B4),
@@ -87,6 +91,25 @@ fun NavigationDrawer(
                     route = GalleryRoute,
                     mini = minibar
                 )
+
+                Column(
+                    modifier = Modifier.fillMaxHeight(1f).fillMaxWidth().padding(20.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.End
+                ) {
+                    IconButton(
+                        colors = ButtonDefaults.buttonColors(),
+                        data = IconButtonBasicData(
+                            icon = Icons.Rounded.Save,
+                            description = "",
+                            onClick = {
+
+                            }
+                        ),
+                        modifier = Modifier.size(50.dp)
+                    )
+                }
+
             }
         },
         content = content,

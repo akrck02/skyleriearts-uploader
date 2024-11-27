@@ -56,7 +56,6 @@ fun getCurrentGalleryFromFile(): SnapshotStateMap<String, ImageData> {
             put(k, v)
         }
     }
-
 }
 
 
