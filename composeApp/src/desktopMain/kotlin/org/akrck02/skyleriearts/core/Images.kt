@@ -32,24 +32,14 @@ fun addImageFileToGallery(
 ) = { file: File ->
 
     // Get the data.
-    var data = gallery[file.name]
+    val data = gallery[file.name] ?: ImageData(
+        name = file.name,
+        path = getResourcesPath(file.name),
+        minPath = getThumbnailPath(file.name)
+    )
 
     // If data does not exist in database, add it
-    if (data == null) {
-        data = ImageData(
-            name = file.name,
-            path = getResourcesPath(file.name),
-            minPath = getThumbnailPath(file.name)
-        )
-
-        gallery[data.name] = data
-    }
-
-    // if it is a new image to upload, add it
-    if (imagesToShow.contains(data).not()) {
-        imagesToShow.add(data)
-    }
-
-    saveGalleryToFile(gallery)
+    gallery[data.name] = data
+    imagesToShow.addIfNotPresent(data)
 
 }

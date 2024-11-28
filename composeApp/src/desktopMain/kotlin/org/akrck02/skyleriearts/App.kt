@@ -29,7 +29,12 @@ fun App() {
     addDatabaseImages(gallery, imagesToShow)
 
     MaterialTheme(colors = getSystemThemeColors()) {
-        NavigationDrawer(navController = navController) {
+        NavigationDrawer(
+            navController = navController,
+            onSave = {
+
+            }
+        ) {
             NavHost(
                 navController = navController,
                 startDestination = HomeRoute,

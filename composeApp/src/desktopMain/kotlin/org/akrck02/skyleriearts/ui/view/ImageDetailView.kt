@@ -39,6 +39,7 @@ import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.card.ImageCard
 import org.akrck02.skyleriearts.ui.control.ControlsBar
 import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.input.MaterialTextField
 import org.akrck02.skyleriearts.ui.tag.TagContainer
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
@@ -153,9 +154,12 @@ private fun ImageDetailComponent(
                     modifier = Modifier.padding(10.dp).fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextField(
-                        value = "Tag",
-                        onValueChange = {}
+                    var tagName by remember { mutableStateOf("New tag") }
+                    MaterialTextField(
+                        value = tagName,
+                        onValueChange = { tagName = it },
+                        label = "Tag",
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
@@ -204,37 +208,22 @@ private fun ImageDetailForm(
         )
 
         var imageName by remember { mutableStateOf(imageData.name) }
-
         val width = 350.dp
-        TextField(
+1
+        MaterialTextField(
             value = imageName,
-            onValueChange = {
-                imageName = it
-            },
-            label = { Text("Name") },
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent
-            ),
-            shape = DEFAULT_ROUNDED_SHAPE,
-            modifier = Modifier.padding(10.dp).width(width),
-            enabled = false
+            onValueChange = { imageName = it },
+            label = "Name",
+            enabled = false,
+            width = width
         )
 
         var imageDescription by remember { mutableStateOf(imageData.description) }
-        TextField(
+        MaterialTextField(
             value = imageDescription,
-            onValueChange = {
-                imageDescription = it
-            },
-            label = { Text("Description") },
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-            ),
-            shape = MIN_ROUNDED_SHAPE,
-            modifier = Modifier.padding(10.dp).height(200.dp).width(width)
+            onValueChange = { imageDescription = it },
+            label = "Description",
+            width = width
         )
     }
 }

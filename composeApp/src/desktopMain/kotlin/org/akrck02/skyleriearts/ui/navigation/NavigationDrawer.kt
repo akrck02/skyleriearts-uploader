@@ -49,6 +49,7 @@ fun NavigationDrawer(
     navController: NavHostController,
     mini: Boolean = false,
     content: @Composable () -> Unit,
+    onSave: () -> Unit = {}
 ) {
 
     val minibar: Boolean by remember { mutableStateOf(mini) }
@@ -102,9 +103,7 @@ fun NavigationDrawer(
                         data = IconButtonBasicData(
                             icon = Icons.Rounded.Save,
                             description = "",
-                            onClick = {
-
-                            }
+                            onClick = onSave
                         ),
                         modifier = Modifier.size(50.dp)
                     )
