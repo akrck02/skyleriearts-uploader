@@ -48,8 +48,8 @@ import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 fun NavigationDrawer(
     navController: NavHostController,
     mini: Boolean = false,
+    onSave: () -> Unit = {},
     content: @Composable () -> Unit,
-    onSave: () -> Unit = {}
 ) {
 
     val minibar: Boolean by remember { mutableStateOf(mini) }

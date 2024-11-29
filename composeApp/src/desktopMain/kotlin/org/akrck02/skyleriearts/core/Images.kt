@@ -1,6 +1,5 @@
 package org.akrck02.skyleriearts.core
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toComposeImageBitmap
@@ -23,12 +22,10 @@ fun loadImageFrom(path: String): ImageBitmap {
 /**
  * Add an image file to gallery
  * @param gallery The gallery of photos
- * @param imagesToShow The images to show
  * @return The method to handle the image addition
  */
 fun addImageFileToGallery(
-    gallery: SnapshotStateMap<String, ImageData>,
-    imagesToShow: SnapshotStateList<ImageData>
+    gallery: SnapshotStateMap<String, ImageData>
 ) = { file: File ->
 
     // Get the data.
@@ -40,6 +37,4 @@ fun addImageFileToGallery(
 
     // If data does not exist in database, add it
     gallery[data.name] = data
-    imagesToShow.addIfNotPresent(data)
-
 }

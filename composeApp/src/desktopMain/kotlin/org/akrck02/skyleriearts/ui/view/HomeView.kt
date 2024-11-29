@@ -32,8 +32,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun HomeView(
     navController: NavHostController,
-    gallery: SnapshotStateMap<String, ImageData>,
-    imagesToShow: SnapshotStateList<ImageData>
+    gallery: SnapshotStateMap<String, ImageData>
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -41,7 +40,7 @@ fun HomeView(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            UploadSection(navController, gallery, imagesToShow)
+            UploadSection(navController, gallery)
         }
     }
 
@@ -51,8 +50,7 @@ fun HomeView(
 @Composable
 private fun UploadSection(
     navController: NavHostController,
-    gallery: SnapshotStateMap<String, ImageData>,
-    imagesToShow: SnapshotStateList<ImageData>
+    gallery: SnapshotStateMap<String, ImageData>
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
@@ -69,7 +67,7 @@ private fun UploadSection(
         DragComposable(
             text = stringResource(Res.string.dragMessage),
             onDrag = { path -> addFileToResources(path) },
-            onFileAdded = addImageFileToGallery(gallery, imagesToShow),
+            onFileAdded = addImageFileToGallery(gallery),
             onFinish = { navController.navigate(GalleryRoute) }
         )
 

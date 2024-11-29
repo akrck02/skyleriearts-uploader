@@ -8,7 +8,7 @@ inline fun <K, V> buildMutableStateMap(builderAction: MutableMap<K, V>.() -> Uni
 
 fun <T> MutableList<T>.addIfNotPresent(data : T) {
     when (this.contains(data)) {
-        true -> this.add(data)
-        false -> return
+        true -> return
+        false -> this.add(data)
     }
 }

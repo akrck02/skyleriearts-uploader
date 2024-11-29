@@ -36,6 +36,44 @@ fun addFileToResources(filepath: String): File? {
     return newFile
 }
 
+
+/**
+ * Remove a file
+ */
+fun removeFile(filepath: String) {
+
+    // If it is directory return
+    val file = File(filepath)
+    if (file.isDirectory)
+        throw RuntimeException("Cannot delete: File $filepath is a directory.")
+
+    // If file cannot be deleted
+    if (file.exists().not())
+        throw RuntimeException("Cannot delete: File $filepath doesn't exist.")
+
+    // If file cannot be deleted
+    if(file.delete().not())
+        throw RuntimeException("Cannot delete: File $filepath.")
+
+}
+
+/**
+ * Remove a file from resources
+ * @param filepath The file path
+ */
+fun removeResourceFile(filepath : String) {
+    removeFile(getResourcesPath(filepath))
+}
+
+/**
+ * Remove thumbnail file
+ * @param filepath The file path
+ */
+fun removeThumbnailFile(filepath: String) {
+    removeFile(getThumbnailPath(filepath))
+}
+
+
 /**
  * Get current gallery from file
  */

@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -26,8 +25,7 @@ const val DEFAULT_ANIM_SPEED = 1000
 
 fun NavGraphBuilder.homeRoute(
     navController: NavHostController,
-    gallery: SnapshotStateMap<String, ImageData>,
-    imagesToShow: SnapshotStateList<ImageData>
+    gallery: SnapshotStateMap<String, ImageData>
 ) {
     composable<HomeRoute>(
         enterTransition = {
@@ -43,13 +41,13 @@ fun NavGraphBuilder.homeRoute(
             )
         }
     ) {
-        HomeView(navController, gallery, imagesToShow)
+        HomeView(navController, gallery)
     }
 }
 
 fun NavGraphBuilder.galleryRoute(
     navController: NavHostController,
-    imagesToUpload: SnapshotStateList<ImageData>
+    gallery: SnapshotStateMap<String, ImageData>
 ) {
     composable<GalleryRoute>(
         enterTransition = {
@@ -65,7 +63,7 @@ fun NavGraphBuilder.galleryRoute(
             )
         }
     ) {
-        GalleryView(navController, imagesToUpload)
+        GalleryView(navController, gallery)
     }
 }
 

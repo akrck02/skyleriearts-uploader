@@ -31,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import org.akrck02.skyleriearts.core.removeFile
+import org.akrck02.skyleriearts.core.removeResourceFile
 import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.GalleryRoute
@@ -74,24 +76,18 @@ private fun getButtonControls(
         description = "Remove",
 
         onClick = {
+
+            // remove the resources
+            removeFile(data.imageData.path)
+            removeFile(data.imageData.minPath)
+
+            // remove the data
             gallery.remove(data.imageData.name)
             saveGalleryToFile(gallery)
+
+            // navigate to gallery
             navController.navigateSecurely(GalleryRoute)
         },
-    ),
-    IconButtonBasicData(
-        icon = Icons.Rounded.Save,
-        description = "Save",
-
-        onClick = {
-            gallery.remove(data.imageData.name)
-            imageData.name = imageData.name
-            imageData.description = imageData.description
-            gallery[data.imageData.name] = imageData
-
-            saveGalleryToFile(gallery)
-            navController.navigateSecurely(GalleryRoute)
-        }
     ),
     IconButtonBasicData(
         icon = Icons.Rounded.Close,
@@ -212,7 +208,10 @@ private fun ImageDetailForm(
 1
         MaterialTextField(
             value = imageName,
-            onValueChange = { imageName = it },
+            onValueChange = {
+                imageName = it
+                imageData.name = it
+            },
             label = "Name",
             enabled = false,
             width = width
@@ -221,7 +220,10 @@ private fun ImageDetailForm(
         var imageDescription by remember { mutableStateOf(imageData.description) }
         MaterialTextField(
             value = imageDescription,
-            onValueChange = { imageDescription = it },
+            onValueChange = {
+                imageDescription = it
+                imageData.description = it
+            },
             label = "Description",
             width = width
         )

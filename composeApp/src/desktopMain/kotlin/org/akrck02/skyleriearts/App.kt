@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
@@ -13,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.akrck02.skyleriearts.core.getCurrentGalleryFromFile
+import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.HomeRoute
 import org.akrck02.skyleriearts.ui.navigation.NavigationDrawer
@@ -25,14 +25,12 @@ fun App() {
 
     val navController: NavHostController = rememberNavController()
     val gallery: SnapshotStateMap<String, ImageData> = getCurrentGalleryFromFile()
-    val imagesToShow: SnapshotStateList<ImageData> = remember { SnapshotStateList() }
-    addDatabaseImages(gallery, imagesToShow)
 
     MaterialTheme(colors = getSystemThemeColors()) {
         NavigationDrawer(
             navController = navController,
             onSave = {
-
+                saveGalleryToFile(gallery)
             }
         ) {
             NavHost(
@@ -42,9 +40,9 @@ fun App() {
                     .fillMaxSize()
                     .padding(0.dp)
             ) {
-                homeRoute(navController, gallery, imagesToShow)
+                homeRoute(navController, gallery)
                 imageDetailRoute(navController, gallery)
-                galleryRoute(navController, imagesToShow)
+                galleryRoute(navController, gallery)
             }
         }
     }
