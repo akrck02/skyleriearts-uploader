@@ -4,6 +4,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import com.eygraber.uri.UriCodec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.akrck02.skyleriearts.exception.ErrorCode
+import org.akrck02.skyleriearts.exception.SoftwareException
 import org.akrck02.skyleriearts.model.ImageData
 import java.io.File
 
@@ -11,17 +13,24 @@ import java.io.File
  * Add the file to the queue if needed
  * if the file already exists, returns
  * the current file.
+ * @param path The file path
+ * @return The new file
  */
-fun addFileToResources(filepath: String): File? {
+fun addFileToResources(path: String): File {
 
     // If it is directory return
-    val file = File(filepath)
+    val file = File(path)
     if (file.isDirectory)
-        return null
-
+        throw SoftwareException(
+            code = ErrorCode.FilePathIsDirectory,
+            message = "Cannot delete: File $path is a directory."
+        )
     // If extension is invalid return
     if (validExtensions.contains(file.extension).not())
-        return null
+        throw SoftwareException(
+            code = ErrorCode.InvalidFileExtension,
+            message = "Cannot delete: File $path has an invalid extension (${file.extension})."
+        )
 
     // if the file exists return the file
     var newFile = File(getResourcesPath(file.name))
@@ -39,47 +48,46 @@ fun addFileToResources(filepath: String): File? {
 
 /**
  * Remove a file
+ * @param path The file path
+ * @throws SoftwareException if an error occurs
  */
-fun removeFile(filepath: String) {
+fun removeFile(path: String) {
 
     // If it is directory return
-    val file = File(filepath)
+    val file = File(path)
     if (file.isDirectory)
-        throw RuntimeException("Cannot delete: File $filepath is a directory.")
+        throw SoftwareException(
+            code = ErrorCode.FilePathIsDirectory,
+            message = "Cannot delete: File $path is a directory."
+        )
 
     // If file cannot be deleted
     if (file.exists().not())
-        throw RuntimeException("Cannot delete: File $filepath doesn't exist.")
+        throw SoftwareException(
+            code = ErrorCode.FileDoesNotExist,
+            message = "Cannot delete: File $path doesn't exist."
+        )
 
     // If file cannot be deleted
-    if(file.delete().not())
-        throw RuntimeException("Cannot delete: File $filepath.")
+    if (file.delete().not())
+        throw SoftwareException(
+            code = ErrorCode.CannotDeleteFile,
+            message = "Cannot delete: File $path."
+        )
 
 }
 
-/**
- * Remove a file from resources
- * @param filepath The file path
- */
-fun removeResourceFile(filepath : String) {
-    removeFile(getResourcesPath(filepath))
-}
+
+private const val GALLERY_FILE_PATH = "images.json"
 
 /**
- * Remove thumbnail file
- * @param filepath The file path
- */
-fun removeThumbnailFile(filepath: String) {
-    removeFile(getThumbnailPath(filepath))
-}
-
-
-/**
- * Get current gallery from file
+ * Get current gallery from file,
+ * create the file if it does not exist
+ * @return The map of names and image data
  */
 fun getCurrentGalleryFromFile(): SnapshotStateMap<String, ImageData> {
 
-    val currentFile = File("images.json")
+    val currentFile = File(GALLERY_FILE_PATH)
     if (currentFile.exists().not()) {
         currentFile.writeText(
             Json.encodeToString<Map<String, ImageData>>(mapOf()),
@@ -90,19 +98,18 @@ fun getCurrentGalleryFromFile(): SnapshotStateMap<String, ImageData> {
     val jsonData = currentFile.readText(Charsets.UTF_8)
     val map = Json.decodeFromString<Map<String, ImageData>>(UriCodec.decode(jsonData))
     return buildMutableStateMap {
-        map.entries.forEach { (k, v) ->
-            put(k, v)
-        }
+        map.entries.forEach { (k, v) -> put(k, v) }
     }
 }
 
 
 /**
- * Get current gallery from file
+ * Save the current galley data to a file
+ * @param gallery The gallery data (image name -> image data)
  */
 fun saveGalleryToFile(gallery: Map<String, ImageData>) {
 
-    val currentFile = File("images.json")
+    val currentFile = File(GALLERY_FILE_PATH)
     currentFile.writeText(
         Json.encodeToString<Map<String, ImageData>>(gallery),
         Charsets.UTF_8

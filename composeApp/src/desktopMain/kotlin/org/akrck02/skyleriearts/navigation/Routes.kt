@@ -13,13 +13,18 @@ var current: Route? = null
 
 // ROUTES
 @Serializable
-data object HomeRoute : Route()
+data object UploadRoute : Route()
 
 @Serializable
 data object GalleryRoute : Route()
 
 @Serializable
 data class ImageDetailRoute(
+    val item: NavigationType
+) : Route()
+
+@Serializable
+data class ImageFullScreenRoute(
     val item: NavigationType
 ) : Route()
 

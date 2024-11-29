@@ -6,20 +6,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Interests
-import androidx.compose.material.icons.rounded.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,23 +20,35 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.addNew
+import kotlinproject.composeapp.generated.resources.addTo
+import kotlinproject.composeapp.generated.resources.categories
+import kotlinproject.composeapp.generated.resources.description
+import kotlinproject.composeapp.generated.resources.name
+import kotlinproject.composeapp.generated.resources.noThingsHereAddOne
+import kotlinproject.composeapp.generated.resources.notNow
+import kotlinproject.composeapp.generated.resources.projects
+import kotlinproject.composeapp.generated.resources.willOrderYourImagesWebsite
+import org.akrck02.skyleriearts.core.addIfNotPresent
 import org.akrck02.skyleriearts.core.removeFile
-import org.akrck02.skyleriearts.core.removeResourceFile
+import org.akrck02.skyleriearts.core.removeIfPresent
 import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.GalleryRoute
+import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.card.ImageCard
 import org.akrck02.skyleriearts.ui.control.ControlsBar
 import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.input.MaterialTextField
+import org.akrck02.skyleriearts.ui.modal.MaterialAlertInputDialog
 import org.akrck02.skyleriearts.ui.tag.TagContainer
-import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
-import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
+import org.jetbrains.compose.resources.stringResource
+import java.util.Locale
 
 /**
  * ImageDetailView
@@ -55,10 +59,14 @@ fun ImageDetailView(
     data: NavigationType,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
-    val imageData = gallery[data.imageData.name] ?: data.imageData
-    Column(modifier = Modifier.fillMaxSize()) {
-        ControlsBar(getButtonControls(gallery, data, navController, imageData))
-        ImageDetailComponent(data, imageData)
+
+    val image by remember { mutableStateOf(gallery[data.imageData.name]) }
+    println("Details for image $image")
+    image?.let {
+        Column(modifier = Modifier.fillMaxSize()) {
+            ControlsBar(getButtonControls(gallery, navController, it))
+            ImageDetailComponent(navController, it)
+        }
     }
 }
 
@@ -67,22 +75,20 @@ fun ImageDetailView(
  */
 private fun getButtonControls(
     gallery: SnapshotStateMap<String, ImageData>,
-    data: NavigationType,
     navController: NavHostController,
     imageData: ImageData
 ) = listOf(
     IconButtonBasicData(
-        icon = Icons.Rounded.Delete,
+        icon = Icons.Rounded.DeleteOutline,
         description = "Remove",
 
         onClick = {
-
             // remove the resources
-            removeFile(data.imageData.path)
-            removeFile(data.imageData.minPath)
+            removeFile(imageData.path)
+            removeFile(imageData.minPath)
 
             // remove the data
-            gallery.remove(data.imageData.name)
+            gallery.remove(imageData.name)
             saveGalleryToFile(gallery)
 
             // navigate to gallery
@@ -100,119 +106,111 @@ private fun getButtonControls(
  * Image detail component
  */
 @Composable
-private fun ImageDetailComponent(
-    data: NavigationType,
-    imageData: ImageData
-) {
+private fun ImageDetailComponent(navController: NavHostController, image: ImageData) {
 
     var showAlert by remember { mutableStateOf(false) }
+    var addingType by remember { mutableStateOf(0) }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        ImageDetailForm(data, imageData)
+        ImageDetailForm(navController, image)
         Column(
             modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
             verticalArrangement = Arrangement.Center,
         ) {
 
-            val projectList = mutableListOf<String>()
-            projectList.addAll(imageData.projects)
-
-            val projects by remember { mutableStateOf(projectList) }
             TagContainer(
-                title = "Projects",
-                tags = projects,
+                title = stringResource(Res.string.projects),
+                tags = image.projects,
                 icons = Icons.Rounded.Interests,
-                emptyText = "There are not projects here, feel free to add one.",
-                onAdd = { showAlert = true }
+                emptyText = stringResource(
+                    Res.string.noThingsHereAddOne,
+                    stringResource(Res.string.projects).lowercase(Locale.getDefault())
+                ),
+                onAdd = {
+                    addingType = 0
+                    showAlert = true
+                },
+                onRemove = { project -> image.projects.removeIfPresent(project) }
             )
 
-            val tagList = mutableListOf<String>()
-            tagList.addAll(imageData.tags)
-
-            val tags by remember { mutableStateOf(tagList) }
             TagContainer(
-                title = "Tags",
-                tags = tags,
-                emptyText = "There are not tags here, feel free to add one.",
-                onAdd = { showAlert = true }
+                title = stringResource(Res.string.categories),
+                tags = image.tags,
+                emptyText = stringResource(
+                    Res.string.noThingsHereAddOne,
+                    stringResource(Res.string.categories).lowercase(Locale.getDefault())
+                ),
+                onAdd = {
+                    addingType = 1
+                    showAlert = true
+                },
+                onRemove = { tag -> image.tags.removeIfPresent(tag) }
             )
 
         }
     }
 
     if (showAlert) {
-        AlertDialog(
-            title = { Text("Add tags to ${imageData.name}") },
-            text = { Text("The tags will order your images in the website.") },
-            buttons = {
+        var tagName by remember { mutableStateOf("") }
+        val tagType =
+            if (addingType == 0) stringResource(Res.string.projects).lowercase(
+                Locale.getDefault()
+            )
+            else stringResource(Res.string.categories).lowercase(
+                Locale.getDefault()
+            )
 
-                Column(
-                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    var tagName by remember { mutableStateOf("New tag") }
-                    MaterialTextField(
-                        value = tagName,
-                        onValueChange = { tagName = it },
-                        label = "Tag",
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                Row(
-                    modifier = Modifier.padding(10.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Button(
-                        onClick = { showAlert = false },
-                        modifier = Modifier.padding(end = 10.dp)
-                    ) {
-                        Text("Add")
-                    }
-
-                    Button(onClick = { showAlert = false }) {
-                        Text("Cancel")
-                    }
-                }
-
-
+        MaterialAlertInputDialog(
+            title = stringResource(Res.string.addTo, tagType, image.name),
+            description = stringResource(Res.string.willOrderYourImagesWebsite, tagType),
+            acceptText = stringResource(Res.string.addNew, tagType),
+            cancelText = stringResource(Res.string.notNow),
+            onClose = { showAlert = false },
+            onClickAccept = {
+                println("Adding project $tagName for image $image")
+                image.projects.addIfNotPresent(tagName.lowercase(Locale.getDefault()))
             },
-            onDismissRequest = {},
-            modifier = Modifier.padding(10.dp)
+            onTextFieldValueChange = { tagName = it },
+            textFieldLabel = tagType,
+            textFieldValue = tagName
         )
-    }
 
+    }
 }
 
 /**
  * Form to edit image details
  */
 @Composable
-private fun ImageDetailForm(
-    data: NavigationType,
-    imageData: ImageData,
-) {
+private fun ImageDetailForm(navController: NavHostController, imageData: ImageData) {
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth(.5f),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ImageCard(
-            imageData = data.imageData,
+            imageData = imageData,
             round = true,
             modifier = Modifier.size(200.dp).padding(20.dp),
+            onClick = {
+                navController.navigateSecurely(
+                    ImageFullScreenRoute(
+                        NavigationType(imageData = imageData)
+                    )
+                )
+            }
         )
 
         var imageName by remember { mutableStateOf(imageData.name) }
         val width = 350.dp
-1
+
         MaterialTextField(
             value = imageName,
             onValueChange = {
                 imageName = it
                 imageData.name = it
             },
-            label = "Name",
+            label = stringResource(Res.string.name),
             enabled = false,
             width = width
         )
@@ -224,7 +222,7 @@ private fun ImageDetailForm(
                 imageDescription = it
                 imageData.description = it
             },
-            label = "Description",
+            label = stringResource(Res.string.description),
             width = width
         )
     }

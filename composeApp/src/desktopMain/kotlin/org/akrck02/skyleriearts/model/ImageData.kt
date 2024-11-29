@@ -1,5 +1,6 @@
 package org.akrck02.skyleriearts.model
 
+import androidx.compose.runtime.mutableStateListOf
 import kotlinx.serialization.Serializable
 
 /**
@@ -14,8 +15,8 @@ class ImageData(
     val minPath: String,
 ) {
     var description: String = ""
-    var tags: MutableSet<String> = mutableSetOf()
-    var projects: MutableSet<String> = mutableSetOf()
+    var tags: MutableList<String> = mutableStateListOf()
+    var projects: MutableList<String> = mutableStateListOf()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

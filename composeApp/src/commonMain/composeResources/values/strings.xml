@@ -4,4 +4,17 @@
     <string name="hi">Hi Skylerie!</string>
     <string name="dragMessage">Drag your images here</string>
     <string name="update">Update</string>
+    <string name="headerTitle">Skylerie portfolio</string>
+    <string name="upload">Upload</string>
+    <string name="gallery">Gallery</string>
+    <string name="projects">Projects</string>
+    <string name="noThingsHereAddOne">There are not %1$s here, feel free to add one.</string>
+    <string name="categories">Categories</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="addTo">Add %1$s to %2$s.</string>
+    <string name="addNew">Add new</string>
+    <string name="notNow">Not now</string>
+    <string name="willOrderYourImagesWebsite">The %1$s will order your images in the website.</string>
+    <string name="numberOfImages">There are %1$s images in your portfolio.</string>
 </resources>

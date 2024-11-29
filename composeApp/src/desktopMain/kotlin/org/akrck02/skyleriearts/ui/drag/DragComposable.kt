@@ -44,6 +44,7 @@ import java.net.URLDecoder
 @Composable
 fun DragComposable(
     text: String,
+    onStarted: () -> Unit = {},
     onDrag: (String) -> File?,
     onFileAdded: (File) -> Unit,
     onFinish: () -> Unit = {}
@@ -60,6 +61,7 @@ fun DragComposable(
 
             override fun onEnded(event: DragAndDropEvent) {
                 showTargetBorder = false
+                onStarted()
             }
 
             override fun onDrop(event: DragAndDropEvent): Boolean {

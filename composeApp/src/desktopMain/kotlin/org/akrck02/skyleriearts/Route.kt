@@ -12,22 +12,24 @@ import androidx.navigation.toRoute
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.AppNavigationType
 import org.akrck02.skyleriearts.navigation.GalleryRoute
-import org.akrck02.skyleriearts.navigation.HomeRoute
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
+import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.navigation.UploadRoute
 import org.akrck02.skyleriearts.ui.view.GalleryView
-import org.akrck02.skyleriearts.ui.view.HomeView
 import org.akrck02.skyleriearts.ui.view.ImageDetailView
+import org.akrck02.skyleriearts.ui.view.ImageFullScreenView
+import org.akrck02.skyleriearts.ui.view.UploadView
 import kotlin.reflect.typeOf
 
 
 const val DEFAULT_ANIM_SPEED = 1000
 
-fun NavGraphBuilder.homeRoute(
+fun NavGraphBuilder.uploadRoute(
     navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
-    composable<HomeRoute>(
+    composable<UploadRoute>(
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Down,
@@ -41,7 +43,7 @@ fun NavGraphBuilder.homeRoute(
             )
         }
     ) {
-        HomeView(navController, gallery)
+        UploadView(navController, gallery)
     }
 }
 
@@ -78,17 +80,39 @@ fun NavGraphBuilder.imageDetailRoute(
             fadeIn(
                 animationSpec = tween(
                     300,
-                    400
+                    600
                 )
             )
         },
         exitTransition = {
-            fadeOut(
-
-            )
+            fadeOut()
         }
     ) {
         val data = it.toRoute<ImageDetailRoute>().item
         ImageDetailView(navController = navController, data = data, gallery = gallery)
     }
+}
+
+fun NavGraphBuilder.imageFullScreenRoute(
+    navController: NavHostController,
+    gallery: SnapshotStateMap<String, ImageData>
+) {
+    composable<ImageFullScreenRoute>(
+        typeMap = mapOf(typeOf<NavigationType>() to AppNavigationType),
+        enterTransition = {
+            fadeIn(
+                animationSpec = tween(
+                    300,
+                    600
+                )
+            )
+        },
+        exitTransition = {
+            fadeOut()
+        }
+    ) {
+        val data = it.toRoute<ImageFullScreenRoute>().item
+        ImageFullScreenView(navController = navController, data = data, gallery = gallery)
+    }
+
 }

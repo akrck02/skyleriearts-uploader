@@ -15,9 +15,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.rounded.Image
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.UploadFile
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material.icons.rounded.Upload
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
@@ -33,15 +33,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavHostController
+import kotlinproject.composeapp.generated.resources.Res
+import kotlinproject.composeapp.generated.resources.gallery
+import kotlinproject.composeapp.generated.resources.headerTitle
+import kotlinproject.composeapp.generated.resources.upload
 import org.akrck02.skyleriearts.navigation.GalleryRoute
-import org.akrck02.skyleriearts.navigation.HomeRoute
 import org.akrck02.skyleriearts.navigation.Route
+import org.akrck02.skyleriearts.navigation.UploadRoute
 import org.akrck02.skyleriearts.navigation.isCurrentRoute
 import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.input.IconButton
 import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -62,9 +69,11 @@ fun NavigationDrawer(
                 modifier = Modifier.padding(0.dp).width(if (minibar) 70.dp else 280.dp)
             ) {
                 Text(
-                    "SkylerieArts",
-                    modifier = Modifier.padding(16.dp),
+                    text = stringResource(Res.string.headerTitle),
+                    modifier = Modifier.padding(16.dp).fillMaxWidth(),
                     fontWeight = FontWeight.Bold,
+                    fontSize = 1.25.em,
+                    textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.primary
                 )
 
@@ -74,18 +83,18 @@ fun NavigationDrawer(
                 )
 
                 navigationDrawerItem(
-                    text = "Upload",
-                    icon = Icons.Rounded.Upload,
+                    text = stringResource(Res.string.upload),
+                    icon = Icons.Outlined.UploadFile,
                     contentDescription = "Upload",
                     colors = colors,
                     navigation = navController,
-                    route = HomeRoute,
+                    route = UploadRoute,
                     mini = minibar
                 )
 
                 navigationDrawerItem(
-                    text = "Gallery",
-                    icon = Icons.Rounded.Image,
+                    text = stringResource(Res.string.gallery),
+                    icon = Icons.Outlined.Image,
                     contentDescription = "Gallery",
                     colors = colors,
                     navigation = navController,

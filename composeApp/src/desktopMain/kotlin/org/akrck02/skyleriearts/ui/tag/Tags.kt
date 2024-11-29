@@ -17,9 +17,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.AddCircleOutline
 import androidx.compose.material.icons.rounded.Tag
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import org.akrck02.skyleriearts.ui.input.IconButton
 import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 
 @Composable
@@ -38,19 +40,19 @@ fun TagContainer(
     icons: ImageVector = Icons.Rounded.Tag,
     contentDescription: String = "",
     emptyText: String = "No elements found.",
-    onAdd: () -> Unit = {}
+    onAdd: () -> Unit = {},
+    onRemove: (String) -> Unit = {}
 ) {
+
+    val keys: MutableList<String> = remember { mutableListOf() }
+    keys.addAll(tags)
+
     Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
 
-        Row {
-            Text(
-                title,
-                fontSize = 1.8.em,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.primary,
-                modifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
-            )
-
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             val colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Transparent,
                 contentColor = MaterialTheme.colors.primary
@@ -59,19 +61,32 @@ fun TagContainer(
             IconButton(
                 colors = colors,
                 data = IconButtonBasicData(
-                    icon = Icons.Rounded.Add,
+                    icon = Icons.Rounded.AddCircleOutline,
                     description = "Add",
                     onClick = { onAdd() }
                 )
             )
+
+            Text(
+                title,
+                fontSize = 1.8.em,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.primary,
+                modifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
+            )
         }
 
-        Row {
+        Row(modifier = Modifier.padding(start = 10.dp)) {
 
             if (tags.isEmpty()) {
-                Text(text = emptyText, color = getSystemThemeColors().primary)
+                Text(
+                    text = emptyText,
+                    color = getSystemThemeColors().primary,
+                    modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
+                )
                 return
             }
+
 
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(150.dp),
@@ -79,9 +94,10 @@ fun TagContainer(
                 verticalArrangement = Arrangement.Top,
                 horizontalArrangement = Arrangement.Start
             ) {
-                items(items = tags, key = { it }) {
+                items(items = keys, key = { it }) {
                     Chip(
-                        onClick = {},
+                        shape = MIN_ROUNDED_SHAPE,
+                        onClick = { onRemove(it) },
                         colors = ChipDefaults.chipColors(
                             backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
                         ),

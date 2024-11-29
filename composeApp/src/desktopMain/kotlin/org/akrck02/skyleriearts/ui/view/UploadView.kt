@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +24,6 @@ import androidx.navigation.NavHostController
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.dragMessage
 import kotlinproject.composeapp.generated.resources.hi
-import kotlinproject.composeapp.generated.resources.update
 import org.akrck02.skyleriearts.core.addFileToResources
 import org.akrck02.skyleriearts.core.addImageFileToGallery
 import org.akrck02.skyleriearts.model.ImageData
@@ -30,7 +32,7 @@ import org.akrck02.skyleriearts.ui.drag.DragComposable
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun HomeView(
+fun UploadView(
     navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
@@ -52,6 +54,22 @@ private fun UploadSection(
     navController: NavHostController,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
+
+    var showLoader by remember { mutableStateOf(false) }
+
+    if (showLoader) {
+        AlertDialog(
+            title = { Text("Loading") },
+            text = { Text("Images are being minified.") },
+            buttons = {
+            },
+            onDismissRequest = { showLoader = false },
+            modifier = Modifier.padding(10.dp),
+            backgroundColor = MaterialTheme.colors.background
+        )
+    }
+
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,9 +84,12 @@ private fun UploadSection(
 
         DragComposable(
             text = stringResource(Res.string.dragMessage),
+            onStarted = { showLoader = true },
             onDrag = { path -> addFileToResources(path) },
             onFileAdded = addImageFileToGallery(gallery),
-            onFinish = { navController.navigate(GalleryRoute) }
+            onFinish = {
+                navController.navigate(GalleryRoute)
+            }
         )
 
     }

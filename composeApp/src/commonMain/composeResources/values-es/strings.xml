@@ -4,4 +4,17 @@
     <string name="hi">Hola Skylerie!</string>
     <string name="dragMessage">Arrastra aquí tus imágenes</string>
     <string name="update">Actualizar</string>
+    <string name="headerTitle">Portfolio de Skylerie</string>
+    <string name="upload">Subir</string>
+    <string name="gallery">Galería</string>
+    <string name="projects">Proyectos</string>
+    <string name="noThingsHereAddOne">No hay %1$s aun, puedes añadir cuando quieras.</string>
+    <string name="categories">Categorías</string>
+    <string name="name">Nombre</string>
+    <string name="description">Descripción</string>
+    <string name="addTo">Añadir %1$s a %2$s.</string>
+    <string name="addNew">Añadir nuevo</string>
+    <string name="notNow">Ahora no</string>
+    <string name="willOrderYourImagesWebsite">Los %1$s ordenarán tus imágenes en la web.</string>
+    <string name="numberOfImages">Hay %1$s imágenes en tu portfolio.</string>
 </resources>
