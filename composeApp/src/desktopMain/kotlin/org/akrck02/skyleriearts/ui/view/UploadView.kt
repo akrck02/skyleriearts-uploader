@@ -67,6 +67,7 @@ private fun UploadSection(
             modifier = Modifier.padding(10.dp),
             backgroundColor = MaterialTheme.colors.background
         )
+        navController.navigate(GalleryRoute)
     }
 
 
@@ -87,9 +88,7 @@ private fun UploadSection(
             onStarted = { showLoader = true },
             onDrag = { path -> addFileToResources(path) },
             onFileAdded = addImageFileToGallery(gallery),
-            onFinish = {
-                navController.navigate(GalleryRoute)
-            }
+            onFinish = {}
         )
 
     }

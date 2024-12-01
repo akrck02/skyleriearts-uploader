@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesomeMosaic
+import androidx.compose.material.icons.outlined.SelectAll
+import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
@@ -34,6 +37,8 @@ import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.card.ImageCard
+import org.akrck02.skyleriearts.ui.input.IconButton
+import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 import org.jetbrains.compose.resources.stringResource
 
@@ -45,26 +50,59 @@ fun GalleryView(navController: NavHostController, gallery: SnapshotStateMap<Stri
         Surface(
             shape = TOTAL_ROUNDED_SHAPE,
             modifier = Modifier.fillMaxWidth().height(100.dp)
-                .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+                .padding(20.dp),
             color = Color(0xFFE7E5E1),
             contentColor = MaterialTheme.colors.primary,
         ) {
-            Row {
-                Icon(
-                    imageVector = Icons.Outlined.AutoAwesomeMosaic,
-                    contentDescription = stringResource(Res.string.gallery),
-                    modifier = Modifier.padding(20.dp).size(50.dp)
-                )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Outlined.AutoAwesomeMosaic,
+                        contentDescription = stringResource(Res.string.gallery),
+                        modifier = Modifier.padding(15.dp).size(35.dp)
+                    )
 
-                Text(
-                    text = stringResource(Res.string.numberOfImages, gallery.size),
-                    modifier = Modifier.padding(top = 22.dp),
-                    fontSize = 1.5.em
-                )
+                    Text(
+                        text = stringResource(Res.string.numberOfImages, gallery.size),
+                        modifier = Modifier.padding(top = 12.dp),
+                        fontSize = 1.5.em
+                    )
+
+                }
+
+                Row {
+                    IconButton(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                            contentColor = MaterialTheme.colors.primary
+                        ),
+                        data = IconButtonBasicData(
+                            icon = Icons.Outlined.TaskAlt,
+                            description = "Select",
+                            onClick = {}
+                        ),
+                        modifier = Modifier.height(70.dp),
+                        iconModifier = Modifier.size(30.dp)
+                    )
+
+                    IconButton(
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                            contentColor = MaterialTheme.colors.primary
+                        ),
+                        data = IconButtonBasicData(
+                            icon = Icons.Outlined.SelectAll,
+                            description = "Select all",
+                            onClick = {}
+                        ),
+                        modifier = Modifier.height(70.dp),
+                        iconModifier = Modifier.size(30.dp)
+                    )
+                }
             }
-
         }
-
 
         val minSize = 150.dp
         LazyVerticalGrid(
@@ -81,6 +119,7 @@ fun GalleryView(navController: NavHostController, gallery: SnapshotStateMap<Stri
 
                 val image = gallery[it]!!
                 ImageCard(
+                    round = image.new,
                     imageData = image,
                     modifier = Modifier.padding(
                         top = 20.dp,

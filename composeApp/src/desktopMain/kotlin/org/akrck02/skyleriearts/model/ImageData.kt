@@ -17,6 +17,7 @@ class ImageData(
     var description: String = ""
     var tags: MutableList<String> = mutableStateListOf()
     var projects: MutableList<String> = mutableStateListOf()
+    var new: Boolean = true
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

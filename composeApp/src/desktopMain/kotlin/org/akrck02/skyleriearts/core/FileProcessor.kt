@@ -109,6 +109,8 @@ fun getCurrentGalleryFromFile(): SnapshotStateMap<String, ImageData> {
  */
 fun saveGalleryToFile(gallery: Map<String, ImageData>) {
 
+    gallery.entries.forEach { (k, v) -> gallery[k]?.new = false }
+
     val currentFile = File(GALLERY_FILE_PATH)
     currentFile.writeText(
         Json.encodeToString<Map<String, ImageData>>(gallery),

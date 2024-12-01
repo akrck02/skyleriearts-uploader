@@ -42,6 +42,11 @@ kotlin {
             // uri
             implementation("com.eygraber:uri-kmp:0.0.18")
 
+            //shapes
+            implementation("androidx.compose:compose-bom:2024.10.01")
+            implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
+
+
         }
 
         desktopMain.dependencies {
@@ -50,6 +55,7 @@ kotlin {
         }
     }
 }
+
 
 
 compose.desktop {

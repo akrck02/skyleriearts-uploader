@@ -45,9 +45,8 @@ fun ImageFullScreenView(
             fontSize = 1.5.em
         )
 
-        if (Files.exists(Path(imageData.path)).not()) {
+        if (Files.exists(Path(imageData.path)).not())
             return
-        }
 
         Surface(
             color = Color.Transparent,

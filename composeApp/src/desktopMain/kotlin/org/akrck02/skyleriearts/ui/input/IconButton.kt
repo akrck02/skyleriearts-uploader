@@ -35,7 +35,8 @@ class IconButtonBasicData(
 fun IconButton(
     colors: ButtonColors,
     data: IconButtonData,
-    modifier: Modifier = Modifier.width(50.dp)
+    modifier: Modifier = Modifier.width(50.dp),
+    iconModifier: Modifier = Modifier
 ) {
     Button(
         onClick = data.onClick,
@@ -45,6 +46,6 @@ fun IconButton(
         elevation = null,
         modifier = modifier,
     ) {
-        Icon(data.icon, data.description, modifier = Modifier)
+        Icon(data.icon, data.description, modifier = iconModifier)
     }
 }

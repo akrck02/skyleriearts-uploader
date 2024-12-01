@@ -35,6 +35,8 @@ fun addImageFileToGallery(
         minPath = getThumbnailPath(file.name)
     )
 
+    data.new = true
+
     // If data does not exist in database, add it
     gallery[data.name] = data
 }
