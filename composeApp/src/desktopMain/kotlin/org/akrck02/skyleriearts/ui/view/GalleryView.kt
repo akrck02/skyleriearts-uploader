@@ -119,7 +119,6 @@ fun GalleryView(navController: NavHostController, gallery: SnapshotStateMap<Stri
 
                 val image = gallery[it]!!
                 ImageCard(
-                    round = image.new,
                     imageData = image,
                     modifier = Modifier.padding(
                         top = 20.dp,

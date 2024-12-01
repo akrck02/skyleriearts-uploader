@@ -6,13 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Badge
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Grade
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,7 +21,6 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import org.akrck02.skyleriearts.core.loadImageFrom
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
@@ -41,7 +41,7 @@ fun ImageCard(
 
     val shape = if (round) TOTAL_ROUNDED_SHAPE else DEFAULT_ROUNDED_SHAPE
     Column(
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Bottom
     ) {
 
 
@@ -50,7 +50,7 @@ fun ImageCard(
                 shape = shape,
                 modifier = modifier.clip(shape).clipToBounds(),
                 color = Color.Transparent,
-                onClick = onClick,
+                onClick = onClick
             ) {
 
                 if (Files.exists(Path(imageData.minPath))) {
@@ -65,11 +65,28 @@ fun ImageCard(
             }
 
             if (imageData.new) {
-                Badge(
-                    modifier = Modifier.height(50.dp).padding(start = 90.dp, top = 30.dp),
-                    backgroundColor = MaterialTheme.colors.primary
+
+//                val infiniteTransition = rememberInfiniteTransition(label = "infinite")
+//
+//                val horizontal by infiniteTransition.animateValue(
+//                    initialValue = 90.dp,
+//                    targetValue = 86.dp,
+//                    animationSpec = infiniteRepeatable(
+//                        animation = tween(250, easing = LinearEasing),
+//                        repeatMode = RepeatMode.Reverse
+//                    ),
+//                    typeConverter = Dp.VectorConverter
+//                )
+
+                Surface(
+                    shape = TOTAL_ROUNDED_SHAPE,
+                    color = MaterialTheme.colors.primary,
+                    modifier = Modifier.size(50.dp).padding(10.dp),
                 ) {
-                    Text(text = selectedName, fontSize = 1.em)
+                    Icon(
+                        imageVector = Icons.Rounded.Grade,
+                        contentDescription = "New"
+                    )
                 }
             }
 
