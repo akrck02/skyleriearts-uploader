@@ -13,7 +13,11 @@ import androidx.navigation.compose.rememberNavController
 import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.UploadRoute
-import org.akrck02.skyleriearts.ui.navigation.NavigationDrawer
+import org.akrck02.skyleriearts.ui.component.navigation.NavigationDrawer
+import org.akrck02.skyleriearts.ui.component.route.galleryRoute
+import org.akrck02.skyleriearts.ui.component.route.imageDetailRoute
+import org.akrck02.skyleriearts.ui.component.route.imageFullScreenRoute
+import org.akrck02.skyleriearts.ui.component.route.uploadRoute
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 import org.jetbrains.compose.ui.tooling.preview.Preview
 

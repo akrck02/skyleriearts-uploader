@@ -28,7 +28,7 @@ import org.akrck02.skyleriearts.core.addFileToResources
 import org.akrck02.skyleriearts.core.addImageFileToGallery
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.GalleryRoute
-import org.akrck02.skyleriearts.ui.drag.DragComposable
+import org.akrck02.skyleriearts.ui.component.drag.DragComposable
 import org.jetbrains.compose.resources.stringResource
 
 @Composable

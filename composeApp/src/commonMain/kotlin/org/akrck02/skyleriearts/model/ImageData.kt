@@ -16,7 +16,7 @@ class ImageData(
     val minPath: String,
 ) {
     var description: String = ""
-    var tags: MutableList<String> = mutableStateListOf()
+    var categories: MutableList<String> = mutableStateListOf()
     var projects: MutableList<String> = mutableStateListOf()
 
     @Transient

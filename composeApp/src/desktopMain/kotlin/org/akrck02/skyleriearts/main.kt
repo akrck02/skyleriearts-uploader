@@ -58,7 +58,7 @@ fun TestWindow() {
         ImageDetailView(
             navController = rememberNavController(),
             gallery = gallery,
-            data = navigationObject
+            data = navigationObject.imageData,
         )
     }
 }

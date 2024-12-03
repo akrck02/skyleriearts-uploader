@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.navigation
+package org.akrck02.skyleriearts.ui.component.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,8 +46,8 @@ import org.akrck02.skyleriearts.navigation.Route
 import org.akrck02.skyleriearts.navigation.UploadRoute
 import org.akrck02.skyleriearts.navigation.isCurrentRoute
 import org.akrck02.skyleriearts.navigation.navigateSecurely
-import org.akrck02.skyleriearts.ui.input.IconButton
-import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.component.input.IconButton
+import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.jetbrains.compose.resources.stringResource
 
 

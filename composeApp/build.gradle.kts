@@ -46,6 +46,7 @@ kotlin {
             implementation("androidx.compose:compose-bom:2024.10.01")
             implementation("androidx.graphics:graphics-shapes:1.0.0-alpha05")
 
+            implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
 
         }
 

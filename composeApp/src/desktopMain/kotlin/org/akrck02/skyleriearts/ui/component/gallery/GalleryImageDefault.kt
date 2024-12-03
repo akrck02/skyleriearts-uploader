@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.gallery
+package org.akrck02.skyleriearts.ui.component.gallery
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding

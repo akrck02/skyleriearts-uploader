@@ -13,6 +13,7 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.addNew
@@ -32,20 +34,19 @@ import kotlinproject.composeapp.generated.resources.noThingsHereAddOne
 import kotlinproject.composeapp.generated.resources.notNow
 import kotlinproject.composeapp.generated.resources.projects
 import kotlinproject.composeapp.generated.resources.willOrderYourImagesWebsite
-import org.akrck02.skyleriearts.core.addIfNotPresent
 import org.akrck02.skyleriearts.core.deleteFromGallery
-import org.akrck02.skyleriearts.core.removeIfPresent
 import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.model.TagType
 import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
-import org.akrck02.skyleriearts.ui.control.ControlsBar
-import org.akrck02.skyleriearts.ui.gallery.GalleryImage
-import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
-import org.akrck02.skyleriearts.ui.input.MaterialTextField
-import org.akrck02.skyleriearts.ui.modal.MaterialAlertInputDialog
-import org.akrck02.skyleriearts.ui.tag.TagContainer
+import org.akrck02.skyleriearts.ui.component.control.ControlsBar
+import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
+import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.component.input.MaterialTextField
+import org.akrck02.skyleriearts.ui.component.modal.MaterialAlertInputDialog
+import org.akrck02.skyleriearts.ui.component.tag.TagContainer
 import org.jetbrains.compose.resources.stringResource
 import java.util.Locale
 
@@ -55,16 +56,32 @@ import java.util.Locale
 @Composable
 fun ImageDetailView(
     navController: NavHostController,
-    data: NavigationType,
+    data: ImageData,
     gallery: SnapshotStateMap<String, ImageData>
 ) {
 
-    val image by remember { mutableStateOf(gallery[data.imageData.name]) }
-    println("Details for image $image")
-    image?.let {
+    val viewModel = viewModel { ImageDetailViewModel(data) }
+    
+    val uiState by viewModel.uiState.collectAsState()
+    println("Details for image $uiState")
+
+    uiState.let {
         Column(modifier = Modifier.fillMaxSize()) {
             ControlsBar(getButtonControls(gallery, navController, it))
-            ImageDetailComponent(navController, it)
+            ImageDetailComponent(
+                image = it,
+                onProjectAdd = viewModel::addProject,
+                onProjectRemove = viewModel::removeProject,
+                onCategoryAdd = viewModel::addCategory,
+                onCategoryRemoved = viewModel::removeCategory,
+                onNameValueChange = viewModel::setName,
+                onDescriptionValueChange = viewModel::setDescription,
+                onImageClick = {
+                    navController.navigateSecurely(
+                        ImageFullScreenRoute(NavigationType(imageData = it))
+                    )
+                }
+            )
         }
     }
 }
@@ -100,13 +117,27 @@ private fun getButtonControls(
  * Image detail component
  */
 @Composable
-private fun ImageDetailComponent(navController: NavHostController, image: ImageData) {
+private fun ImageDetailComponent(
+    image: ImageData,
+    onProjectAdd: (String) -> Unit,
+    onProjectRemove: (String) -> Unit,
+    onCategoryAdd: (String) -> Unit,
+    onCategoryRemoved: (String) -> Unit,
+    onNameValueChange: (String) -> Unit,
+    onDescriptionValueChange: (String) -> Unit,
+    onImageClick: (ImageData) -> Unit
+) {
 
     var showAlert by remember { mutableStateOf(false) }
-    var addingType by remember { mutableStateOf(0) }
+    var tagType by remember { mutableStateOf(TagType.Project) }
 
     Row(modifier = Modifier.fillMaxSize()) {
-        ImageDetailForm(navController, image)
+        ImageDetailForm(
+            imageData = image,
+            onNameValueChange,
+            onDescriptionValueChange,
+            onImageClick
+        )
         Column(
             modifier = Modifier.padding(top = 20.dp).fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -121,52 +152,54 @@ private fun ImageDetailComponent(navController: NavHostController, image: ImageD
                     stringResource(Res.string.projects).lowercase(Locale.getDefault())
                 ),
                 onAdd = {
-                    addingType = 0
+                    tagType = TagType.Project
                     showAlert = true
                 },
-                onRemove = { project -> image.projects.removeIfPresent(project) }
+                onRemove = onProjectRemove
             )
 
             TagContainer(
                 title = stringResource(Res.string.categories),
-                tags = image.tags,
+                tags = image.categories,
                 emptyText = stringResource(
                     Res.string.noThingsHereAddOne,
                     stringResource(Res.string.categories).lowercase(Locale.getDefault())
                 ),
                 onAdd = {
-                    addingType = 1
+                    tagType = TagType.Category
                     showAlert = true
                 },
-                onRemove = { tag -> image.tags.removeIfPresent(tag) }
+                onRemove = onCategoryRemoved
             )
 
         }
     }
 
     if (showAlert) {
-        var tagName by remember { mutableStateOf("") }
-        val tagType =
-            if (addingType == 0) stringResource(Res.string.projects).lowercase(
-                Locale.getDefault()
-            )
-            else stringResource(Res.string.categories).lowercase(
-                Locale.getDefault()
-            )
+
+        var tag by remember { mutableStateOf("") }
+        val tagLocalName = when (tagType) {
+            TagType.Project -> stringResource(Res.string.projects).lowercase(Locale.getDefault())
+            TagType.Category -> stringResource(Res.string.categories).lowercase(Locale.getDefault())
+        }
 
         MaterialAlertInputDialog(
-            title = stringResource(Res.string.addTo, tagType, image.name),
-            description = stringResource(Res.string.willOrderYourImagesWebsite, tagType),
-            acceptText = stringResource(Res.string.addNew, tagType),
+            title = stringResource(Res.string.addTo, tagLocalName, image.name),
+            description = stringResource(Res.string.willOrderYourImagesWebsite, tagLocalName),
+            acceptText = stringResource(Res.string.addNew, tagLocalName),
             cancelText = stringResource(Res.string.notNow),
             onClose = { showAlert = false },
             onClickAccept = {
-                println("Adding project $tagName for image $image")
-                image.projects.addIfNotPresent(tagName.lowercase(Locale.getDefault()))
+                println("Adding project $tag for image $image")
+                if (TagType.Project == tagType) {
+                    onProjectAdd(tag)
+                } else {
+                    onCategoryAdd(tag)
+                }
             },
-            onTextFieldValueChange = { tagName = it },
-            textFieldLabel = tagType,
-            textFieldValue = tagName
+            onTextFieldValueChange = { tag = it },
+            textFieldLabel = tagLocalName,
+            textFieldValue = tag
         )
 
     }
@@ -176,7 +209,12 @@ private fun ImageDetailComponent(navController: NavHostController, image: ImageD
  * Form to edit image details
  */
 @Composable
-private fun ImageDetailForm(navController: NavHostController, imageData: ImageData) {
+private fun ImageDetailForm(
+    imageData: ImageData,
+    onNameValueChange: (String) -> Unit,
+    onDescriptionValueChange: (String) -> Unit,
+    onImageClick: (ImageData) -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth(.5f),
         verticalArrangement = Arrangement.Center,
@@ -186,36 +224,23 @@ private fun ImageDetailForm(navController: NavHostController, imageData: ImageDa
             data = imageData,
             modifier = Modifier.size(200.dp).padding(20.dp),
             round = true,
-            onClick = {
-                navController.navigateSecurely(
-                    ImageFullScreenRoute(
-                        NavigationType(imageData = imageData)
-                    )
-                )
-            }
+            onClick = { onImageClick(imageData) }
         )
 
-        var imageName by remember { mutableStateOf(imageData.name) }
         val width = 350.dp
 
         MaterialTextField(
-            value = imageName,
-            onValueChange = {
-                imageName = it
-                imageData.name = it
-            },
+            value = imageData.name,
+            onValueChange = onNameValueChange,
             label = stringResource(Res.string.name),
             enabled = false,
             width = width
         )
 
-        var imageDescription by remember { mutableStateOf(imageData.description) }
+
         MaterialTextField(
-            value = imageDescription,
-            onValueChange = {
-                imageDescription = it
-                imageData.description = it
-            },
+            value = imageData.description,
+            onValueChange = onDescriptionValueChange,
             label = stringResource(Res.string.description),
             width = width
         )

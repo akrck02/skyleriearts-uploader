@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.control
+package org.akrck02.skyleriearts.ui.component.control
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,8 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.ui.input.IconButton
-import org.akrck02.skyleriearts.ui.input.IconButtonData
+import org.akrck02.skyleriearts.ui.component.input.IconButton
+import org.akrck02.skyleriearts.ui.component.input.IconButtonData
 
 @Composable
 fun ControlsBar(

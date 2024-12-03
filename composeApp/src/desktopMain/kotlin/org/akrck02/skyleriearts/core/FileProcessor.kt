@@ -1,13 +1,18 @@
 package org.akrck02.skyleriearts.core
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.eygraber.uri.UriCodec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.akrck02.skyleriearts.exception.ErrorCode
 import org.akrck02.skyleriearts.exception.SoftwareException
 import org.akrck02.skyleriearts.model.ImageData
+import org.jetbrains.skia.Image
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * Add the file to the queue if needed
@@ -117,4 +122,14 @@ fun saveGalleryToFile(gallery: Map<String, ImageData>) {
         Charsets.UTF_8
     )
 
+}
+
+/**
+ * Load an image from path
+ * @param path The file path
+ * @return The loaded image
+ */
+fun loadImageFrom(path: String): ImageBitmap {
+    val bytes = Files.readAllBytes(Path.of(path)) // path relative to project root
+    return Image.makeFromEncoded(bytes).toComposeImageBitmap()
 }

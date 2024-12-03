@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.tag
+package org.akrck02.skyleriearts.ui.component.tag
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,8 +27,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import org.akrck02.skyleriearts.ui.input.IconButton
-import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.component.input.IconButton
+import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 

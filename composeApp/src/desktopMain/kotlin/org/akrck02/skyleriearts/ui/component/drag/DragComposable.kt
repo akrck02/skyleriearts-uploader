@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.drag
+package org.akrck02.skyleriearts.ui.component.drag
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.draganddrop.dragAndDropTarget

@@ -21,24 +21,3 @@ fun <T> MutableList<T>.removeIfPresent(data: T) {
         false -> return
     }
 }
-
-
-fun <K> MutableMap<K, Int>.toggle(
-    key: K,
-    value: Int = 0,
-    onAdd: () -> Unit = {},
-    onRemove: () -> Unit = {},
-) {
-
-    when (this.contains(key)) {
-        true -> {
-            this.remove(key)
-            onRemove()
-        }
-
-        false -> {
-            this[key] = value
-            onAdd()
-        }
-    }
-}

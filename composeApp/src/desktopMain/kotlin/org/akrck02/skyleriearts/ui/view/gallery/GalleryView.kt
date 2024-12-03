@@ -40,12 +40,15 @@ import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
-import org.akrck02.skyleriearts.ui.gallery.GalleryImage
-import org.akrck02.skyleriearts.ui.input.IconButton
-import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
+import org.akrck02.skyleriearts.ui.component.input.IconButton
+import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 import org.jetbrains.compose.resources.stringResource
 
+/**
+ * Selection mode
+ */
 enum class SelectionMode {
     Select,
     SelectAll,
@@ -212,7 +215,7 @@ private fun GalleryViewHeaderControls(
 }
 
 /**
- * Lazy gallery
+ * Lazy image gallery
  *
  * @param gallery The gallery
  * @param selectionMode The selection mode

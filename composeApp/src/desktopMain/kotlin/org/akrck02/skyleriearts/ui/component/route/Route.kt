@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts
+package org.akrck02.skyleriearts.ui.component.route
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -89,7 +89,7 @@ fun NavGraphBuilder.imageDetailRoute(
         }
     ) {
         val data = it.toRoute<ImageDetailRoute>().item
-        ImageDetailView(navController = navController, data = data, gallery = gallery)
+        ImageDetailView(navController = navController, data = data.imageData, gallery = gallery)
     }
 }
 

@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.input
+package org.akrck02.skyleriearts.ui.component.input
 
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button

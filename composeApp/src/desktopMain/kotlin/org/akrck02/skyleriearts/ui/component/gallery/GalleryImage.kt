@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.gallery
+package org.akrck02.skyleriearts.ui.component.gallery
 
 
 import androidx.compose.foundation.Image
