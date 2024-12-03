@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.view
+package org.akrck02.skyleriearts.ui.view.upload
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

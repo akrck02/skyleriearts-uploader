@@ -16,10 +16,10 @@ import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.UploadRoute
-import org.akrck02.skyleriearts.ui.view.GalleryView
-import org.akrck02.skyleriearts.ui.view.ImageDetailView
-import org.akrck02.skyleriearts.ui.view.ImageFullScreenView
-import org.akrck02.skyleriearts.ui.view.UploadView
+import org.akrck02.skyleriearts.ui.view.gallery.GalleryView
+import org.akrck02.skyleriearts.ui.view.image.detail.ImageDetailView
+import org.akrck02.skyleriearts.ui.view.image.fullscreen.ImageFullScreenView
+import org.akrck02.skyleriearts.ui.view.upload.UploadView
 import kotlin.reflect.typeOf
 
 

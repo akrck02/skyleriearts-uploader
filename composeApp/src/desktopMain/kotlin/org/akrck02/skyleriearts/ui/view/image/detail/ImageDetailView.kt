@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.view
+package org.akrck02.skyleriearts.ui.view.image.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,16 +33,15 @@ import kotlinproject.composeapp.generated.resources.notNow
 import kotlinproject.composeapp.generated.resources.projects
 import kotlinproject.composeapp.generated.resources.willOrderYourImagesWebsite
 import org.akrck02.skyleriearts.core.addIfNotPresent
-import org.akrck02.skyleriearts.core.removeFile
+import org.akrck02.skyleriearts.core.deleteFromGallery
 import org.akrck02.skyleriearts.core.removeIfPresent
-import org.akrck02.skyleriearts.core.saveGalleryToFile
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.navigateSecurely
-import org.akrck02.skyleriearts.ui.card.ImageCard
 import org.akrck02.skyleriearts.ui.control.ControlsBar
+import org.akrck02.skyleriearts.ui.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.input.MaterialTextField
 import org.akrck02.skyleriearts.ui.modal.MaterialAlertInputDialog
@@ -83,13 +82,7 @@ private fun getButtonControls(
         description = "Remove",
 
         onClick = {
-            // remove the resources
-            removeFile(imageData.path)
-            removeFile(imageData.minPath)
-
-            // remove the data
-            gallery.remove(imageData.name)
-            saveGalleryToFile(gallery)
+            deleteFromGallery(imageData, gallery)
 
             // navigate to gallery
             navController.navigateSecurely(GalleryRoute)
@@ -101,6 +94,7 @@ private fun getButtonControls(
         onClick = { navController.navigateSecurely(GalleryRoute) }
     )
 )
+
 
 /**
  * Image detail component
@@ -188,10 +182,10 @@ private fun ImageDetailForm(navController: NavHostController, imageData: ImageDa
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        ImageCard(
-            imageData = imageData,
-            round = true,
+        GalleryImage(
+            data = imageData,
             modifier = Modifier.size(200.dp).padding(20.dp),
+            round = true,
             onClick = {
                 navController.navigateSecurely(
                     ImageFullScreenRoute(

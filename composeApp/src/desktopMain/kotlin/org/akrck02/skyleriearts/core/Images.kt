@@ -40,3 +40,16 @@ fun addImageFileToGallery(
     // If data does not exist in database, add it
     gallery[data.name] = data
 }
+
+fun deleteFromGallery(
+    imageData: ImageData,
+    gallery: SnapshotStateMap<String, ImageData>
+) {
+    // remove the resources
+    removeFile(imageData.path)
+    removeFile(imageData.minPath)
+
+    // remove the data
+    gallery.remove(imageData.name)
+    saveGalleryToFile(gallery)
+}
