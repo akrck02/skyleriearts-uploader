@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AutoAwesomeMosaic
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material.icons.outlined.DeleteOutline
-import androidx.compose.material.icons.outlined.SelectAll
 import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +36,6 @@ import kotlinproject.composeapp.generated.resources.Res
 import kotlinproject.composeapp.generated.resources.gallery
 import kotlinproject.composeapp.generated.resources.numberOfImages
 import org.akrck02.skyleriearts.core.deleteFromGallery
-import org.akrck02.skyleriearts.core.toggle
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
@@ -48,6 +46,12 @@ import org.akrck02.skyleriearts.ui.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 import org.jetbrains.compose.resources.stringResource
 
+enum class SelectionMode {
+    Select,
+    SelectAll,
+    None
+}
+
 /**
  * The image gallery view
  *
@@ -55,68 +59,47 @@ import org.jetbrains.compose.resources.stringResource
  * @param gallery The gallery to show
  */
 @Composable
-fun GalleryView(navController: NavHostController, gallery: SnapshotStateMap<String, ImageData>) {
+fun GalleryView(
+    navController: NavHostController,
+    gallery: SnapshotStateMap<String, ImageData>
+) {
 
-    var selectionMode by remember { mutableStateOf(false) }
-    var selectAll by remember { mutableStateOf(false) }
-    val selectedImages = remember { mutableMapOf<String, Int>() }
-
+    var selectionMode by remember { mutableStateOf(SelectionMode.None) }
     Column(modifier = Modifier.fillMaxSize()) {
         GalleryViewHeader(
             gallery = gallery,
-            selectedImages = selectedImages,
-            onSelectAllModeToggled = {
-                selectionMode = true
-                selectAll = !selectAll
-            },
             onSelectionModeToggled = {
-                selectionMode = !selectionMode
-                selectAll = false
+                selectionMode = when (selectionMode) {
+                    SelectionMode.None,
+                    SelectionMode.SelectAll -> {
+                        SelectionMode.Select
+                    }
+
+                    SelectionMode.Select -> {
+                        SelectionMode.None
+                    }
+                }
             }
         )
 
-        val minSize = 150.dp
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize),
-            modifier = GalleryViewDefault.lazyGridModifier,
-            verticalArrangement = Arrangement.Top,
-        ) {
-
-            val keys: MutableList<String> = mutableListOf()
-            keys.addAll(gallery.keys)
-
-            items(keys, key = { it }) {
-                val image = gallery[it]!!
-                var selected by remember { mutableStateOf(false) }
-
-                if (selectionMode && selectAll) {
-                    selected = true
-                }
-
-                GalleryImage(
-                    data = image,
-                    modifier = GalleryViewDefault.imageModifier(minSize),
-                    selected = selected,
-                    onClick = {
-
-                        if (selectionMode) {
-                            selectedImages.toggle(
-                                key = it,
-                                onAdd = { selected = true },
-                                onRemove = { selected = false }
-                            )
-
-                            selectAll = false
-                        } else {
-                            navController.navigateSecurely(
-                                route = ImageDetailRoute(item = NavigationType(imageData = image))
-                            )
-                        }
-                    }
+        LazyGallery(
+            gallery = gallery,
+            selectionMode = selectionMode,
+            onImageClick = {
+                navController.navigateSecurely(
+                    route = ImageDetailRoute(
+                        item = NavigationType(
+                            imageData = it
+                        )
+                    )
                 )
-
+            },
+            onSelectedImageToggle = {
+                gallery[it.name]!!.selected = !it.selected
+                selectionMode = SelectionMode.Select
             }
-        }
+
+        )
     }
 }
 
@@ -125,14 +108,11 @@ fun GalleryView(navController: NavHostController, gallery: SnapshotStateMap<Stri
  *
  * @param gallery The gallery to control
  * @param onSelectionModeToggled Callback for selection mode toggle
- * @param onSelectAllModeToggled Callback on select all mode toggle
  */
 @Composable
 private fun GalleryViewHeader(
     gallery: SnapshotStateMap<String, ImageData>,
-    selectedImages: MutableMap<String, Int>,
-    onSelectionModeToggled: () -> Unit,
-    onSelectAllModeToggled: () -> Unit
+    onSelectionModeToggled: () -> Unit
 ) {
     Surface(
         shape = TOTAL_ROUNDED_SHAPE,
@@ -147,9 +127,7 @@ private fun GalleryViewHeader(
             GalleryViewHeaderTitle(gallery)
             GalleryViewHeaderControls(
                 gallery = gallery,
-                selectedImages = selectedImages,
-                onSelectionModeToggled = onSelectionModeToggled,
-                onSelectAllModeToggled = onSelectAllModeToggled
+                onSelectionModeToggled = onSelectionModeToggled
             )
         }
     }
@@ -181,14 +159,11 @@ private fun GalleryViewHeaderTitle(gallery: SnapshotStateMap<String, ImageData>)
  * The controls of the gallery view
  *
  * @param onSelectionModeToggled Callback for selection mode toggle
- * @param onSelectAllModeToggled Callback on select all mode toggle
  */
 @Composable
 private fun GalleryViewHeaderControls(
     gallery: SnapshotStateMap<String, ImageData>,
-    selectedImages: MutableMap<String, Int>,
-    onSelectionModeToggled: () -> Unit,
-    onSelectAllModeToggled: () -> Unit
+    onSelectionModeToggled: () -> Unit
 ) {
 
     var selected by remember { mutableStateOf(false) }
@@ -204,11 +179,10 @@ private fun GalleryViewHeaderControls(
                     icon = Icons.Outlined.DeleteOutline,
                     description = "Delete",
                     onClick = {
-                        selectedImages.forEach { (key, _) ->
-                            val imageData: ImageData? = gallery[key]
-
-                            imageData?.let {
-                                deleteFromGallery(imageData, gallery)
+                        gallery.forEach { (name, image) ->
+                            if (image.selected) {
+                                deleteFromGallery(image, gallery)
+                                gallery.remove(name)
                             }
                         }
                     }
@@ -217,7 +191,6 @@ private fun GalleryViewHeaderControls(
                 iconModifier = Modifier.size(30.dp)
             )
         }
-
 
         IconButton(
             colors = ButtonDefaults.buttonColors(
@@ -235,22 +208,59 @@ private fun GalleryViewHeaderControls(
             modifier = Modifier.height(70.dp),
             iconModifier = Modifier.size(30.dp)
         )
+    }
+}
 
-        IconButton(
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colors.primary
-            ),
-            data = IconButtonBasicData(
-                icon = Icons.Outlined.SelectAll,
-                description = "Select all",
+/**
+ * Lazy gallery
+ *
+ * @param gallery The gallery
+ * @param selectionMode The selection mode
+ * @param onImageClick Callback for regular mode image click
+ * @param onSelectedImageToggle Callback for image selection
+ */
+@Composable
+private fun LazyGallery(
+    gallery: SnapshotStateMap<String, ImageData>,
+    selectionMode: SelectionMode,
+    onImageClick: (ImageData) -> Unit,
+    onSelectedImageToggle: (ImageData) -> Unit
+) {
+    val minSize = 150.dp
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize),
+        modifier = GalleryViewDefault.lazyGridModifier,
+        verticalArrangement = Arrangement.Top,
+    ) {
+
+        val keys: MutableList<String> = mutableListOf()
+        keys.addAll(gallery.keys)
+
+        items(keys, key = { it }) {
+
+            val image = gallery[it]!!
+            var selected by remember { mutableStateOf(image.selected) }
+
+            GalleryImage(
+                data = image,
+                modifier = GalleryViewDefault.imageModifier(minSize),
+                selected = selected,
+                grayscale = (selectionMode == SelectionMode.SelectAll || selectionMode == SelectionMode.Select) && selected.not(),
                 onClick = {
-                    selected = true
-                    onSelectAllModeToggled()
+                    when (selectionMode) {
+                        SelectionMode.SelectAll,
+                        SelectionMode.Select -> {
+                            onSelectedImageToggle(image)
+                            selected = image.selected
+                        }
+
+                        SelectionMode.None -> {
+                            onImageClick(image)
+                        }
+                    }
                 }
-            ),
-            modifier = Modifier.height(70.dp),
-            iconModifier = Modifier.size(30.dp)
-        )
+            )
+
+        }
     }
 }

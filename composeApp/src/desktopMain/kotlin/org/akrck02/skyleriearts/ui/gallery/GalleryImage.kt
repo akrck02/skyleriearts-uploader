@@ -19,6 +19,8 @@ import androidx.compose.material.icons.rounded.Grade
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.core.loadImageFrom
@@ -47,6 +49,7 @@ fun GalleryImage(
     infoChipLabel: String = "New",
     round: Boolean = false,
     selected: Boolean = false,
+    grayscale: Boolean = false,
     onClick: () -> Unit = {}
 ) {
     val shape = GalleryImageDefault.imageShape(round)
@@ -59,7 +62,8 @@ fun GalleryImage(
                 modifier = modifier,
                 onClick = onClick,
                 round = round,
-                selected = selected
+                selected = selected,
+                grayscale = grayscale
             )
 
             if (showInfoChip) {
@@ -127,7 +131,8 @@ private fun ImageSurface(
     modifier: Modifier,
     round: Boolean,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    grayscale: Boolean
 ) {
 
     if (Files.exists(Path(data.minPath)).not())
@@ -137,13 +142,17 @@ private fun ImageSurface(
         shape = shape,
         modifier = GalleryImageDefault.surfaceModifier(modifier, shape),
         color = Color.Transparent,
-        onClick = onClick
+        onClick = onClick,
     ) {
         Image(
             modifier = GalleryImageDefault.imageModifier(round, selected),
             bitmap = loadImageFrom(data.minPath),
             contentDescription = data.name,
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            colorFilter = if (grayscale)
+                ColorFilter.colorMatrix(ColorMatrix().apply {
+                    setToSaturation(0f)
+                }) else null
         )
     }
 
