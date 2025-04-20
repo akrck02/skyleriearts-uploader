@@ -13,6 +13,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Grade
@@ -23,7 +24,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.core.loadImageFrom
+import org.akrck02.skyleriearts.core.processor.FileProcessor
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 import java.nio.file.Files
@@ -135,8 +136,6 @@ private fun ImageSurface(
     grayscale: Boolean
 ) {
 
-    if (Files.exists(Path(data.minPath)).not())
-        return
 
     Surface(
         shape = shape,
@@ -144,9 +143,14 @@ private fun ImageSurface(
         color = Color.Transparent,
         onClick = onClick,
     ) {
+        if (Files.exists(Path(data.minPath)).not()) {
+            Text("NOT FOUND ${data.minPath}")
+            return@Surface
+        }
+
         Image(
             modifier = GalleryImageDefault.imageModifier(round, selected),
-            bitmap = loadImageFrom(data.minPath),
+            bitmap = FileProcessor.loadImageFrom(data.minPath),
             contentDescription = data.name,
             contentScale = ContentScale.Crop,
             colorFilter = if (grayscale)

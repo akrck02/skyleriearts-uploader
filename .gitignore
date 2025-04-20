@@ -21,3 +21,4 @@ composeApp/resources
 composeApp/thumbnails
 
 composeApp/images.json
+composeApp/.env

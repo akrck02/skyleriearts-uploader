@@ -48,6 +48,17 @@ kotlin {
 
             implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.8.2")
 
+            // env
+            implementation("io.github.cdimascio:dotenv-kotlin:6.5.1")
+
+            // koin
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.composeVM)
+
+            // ViewModel support in common code
+            implementation(libs.androidx.lifecycle.viewmodel)
+
         }
 
         desktopMain.dependencies {
@@ -64,7 +75,7 @@ compose.desktop {
         mainClass = "org.akrck02.skyleriearts.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Rpm)
             packageName = "org.akrck02.skyleriearts"
             packageVersion = "1.0.0"
         }

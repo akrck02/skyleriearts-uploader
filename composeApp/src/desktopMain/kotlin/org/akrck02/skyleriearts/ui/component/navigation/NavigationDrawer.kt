@@ -17,7 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.UploadFile
-import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
@@ -27,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,24 +35,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.navigation.NavHostController
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.gallery
-import kotlinproject.composeapp.generated.resources.headerTitle
-import kotlinproject.composeapp.generated.resources.upload
 import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.Route
 import org.akrck02.skyleriearts.navigation.UploadRoute
-import org.akrck02.skyleriearts.navigation.isCurrentRoute
-import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
+import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
+import skylerieartsuploader.composeapp.generated.resources.Res
+import skylerieartsuploader.composeapp.generated.resources.gallery
+import skylerieartsuploader.composeapp.generated.resources.headerTitle
+import skylerieartsuploader.composeapp.generated.resources.upload
 
 
 @Composable
 fun NavigationDrawer(
-    navController: NavHostController,
+    appViewModel: AppViewModel,
     mini: Boolean = false,
     onSave: () -> Unit = {},
     content: @Composable () -> Unit,
@@ -82,13 +79,22 @@ fun NavigationDrawer(
                     selectedBadgeColor = MaterialTheme.colors.primary
                 )
 
+                var uploadSelected = false
+                var gallerySelected = false
+                when (appViewModel.currentRoute) {
+                    UploadRoute -> uploadSelected = true
+                    GalleryRoute -> gallerySelected = true
+                    else -> uploadSelected = true
+                }
+
                 navigationDrawerItem(
                     text = stringResource(Res.string.upload),
                     icon = Icons.Outlined.UploadFile,
                     contentDescription = "Upload",
                     colors = colors,
-                    navigation = navController,
+                    appViewModel = appViewModel,
                     route = UploadRoute,
+                    selected = uploadSelected,
                     mini = minibar
                 )
 
@@ -97,8 +103,9 @@ fun NavigationDrawer(
                     icon = Icons.Outlined.Image,
                     contentDescription = "Gallery",
                     colors = colors,
-                    navigation = navController,
+                    appViewModel = appViewModel,
                     route = GalleryRoute,
+                    selected = gallerySelected,
                     mini = minibar
                 )
 
@@ -110,11 +117,12 @@ fun NavigationDrawer(
                     IconButton(
                         colors = ButtonDefaults.buttonColors(),
                         data = IconButtonBasicData(
-                            icon = Icons.Rounded.Save,
+                            icon = Icons.Rounded.CloudUpload,
                             description = "",
                             onClick = onSave
                         ),
-                        modifier = Modifier.size(50.dp)
+                        modifier = Modifier.size(50.dp),
+                        iconModifier = Modifier.size(50.dp)
                     )
                 }
 
@@ -131,20 +139,16 @@ private fun navigationDrawerItem(
     icon: ImageVector = Icons.Outlined.Home,
     contentDescription: String = "",
     colors: NavigationDrawerItemColors = NavigationDrawerItemDefaults.colors(),
-    navigation: NavHostController,
+    appViewModel: AppViewModel,
     route: Route,
+    selected: Boolean = false,
     mini: Boolean = false
 ) {
-
-    var selected: Boolean by remember { mutableStateOf(false) }
-    selected = navigation.isCurrentRoute(route)
 
     NavigationDrawerItem(
         label = {
 
-            if (mini) {
-                return@NavigationDrawerItem
-            }
+            if (mini) return@NavigationDrawerItem
 
             Text(
                 text = text,
@@ -168,7 +172,7 @@ private fun navigationDrawerItem(
         ).height(50.dp),
         colors = colors,
         onClick = {
-            navigation.navigateSecurely(route)
+            appViewModel.navigate(route)
         }
     )
 }

@@ -9,26 +9,23 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.navigation.NavHostController
-import org.akrck02.skyleriearts.core.loadImageFrom
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.core.processor.FileProcessor
 import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import java.nio.file.Files
 import kotlin.io.path.Path
 
 
 @Composable
 fun ImageFullScreenView(
-    navController: NavHostController,
-    data: NavigationType,
-    gallery: SnapshotStateMap<String, ImageData>
+    appViewModel: AppViewModel,
+    data: NavigationType
 ) {
 
     val imageData = data.imageData
@@ -54,7 +51,7 @@ fun ImageFullScreenView(
         ) {
             Image(
                 modifier = Modifier.fillMaxSize().padding(20.dp),
-                bitmap = loadImageFrom(imageData.path),
+                bitmap = FileProcessor.loadImageFrom(imageData.path),
                 contentDescription = imageData.name,
                 contentScale = ContentScale.Inside
             )

@@ -13,7 +13,6 @@ import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,67 +21,55 @@ import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.addNew
-import kotlinproject.composeapp.generated.resources.addTo
-import kotlinproject.composeapp.generated.resources.categories
-import kotlinproject.composeapp.generated.resources.description
-import kotlinproject.composeapp.generated.resources.name
-import kotlinproject.composeapp.generated.resources.noThingsHereAddOne
-import kotlinproject.composeapp.generated.resources.notNow
-import kotlinproject.composeapp.generated.resources.projects
-import kotlinproject.composeapp.generated.resources.willOrderYourImagesWebsite
-import org.akrck02.skyleriearts.core.deleteFromGallery
+import org.akrck02.skyleriearts.core.processor.ImageProcessor
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.model.TagType
 import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
-import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.component.control.ControlsBar
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.component.input.MaterialTextField
 import org.akrck02.skyleriearts.ui.component.modal.MaterialAlertInputDialog
 import org.akrck02.skyleriearts.ui.component.tag.TagContainer
+import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
+import skylerieartsuploader.composeapp.generated.resources.Res
+import skylerieartsuploader.composeapp.generated.resources.addNew
+import skylerieartsuploader.composeapp.generated.resources.addTo
+import skylerieartsuploader.composeapp.generated.resources.categories
+import skylerieartsuploader.composeapp.generated.resources.description
+import skylerieartsuploader.composeapp.generated.resources.name
+import skylerieartsuploader.composeapp.generated.resources.noThingsHereAddOne
+import skylerieartsuploader.composeapp.generated.resources.notNow
+import skylerieartsuploader.composeapp.generated.resources.projects
+import skylerieartsuploader.composeapp.generated.resources.willOrderYourImagesWebsite
 import java.util.Locale
 
 /**
  * ImageDetailView
  */
 @Composable
-fun ImageDetailView(
-    navController: NavHostController,
-    data: ImageData,
-    gallery: SnapshotStateMap<String, ImageData>
-) {
+fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel) {
 
-    val viewModel = viewModel { ImageDetailViewModel(data) }
-    
-    val uiState by viewModel.uiState.collectAsState()
-    println("Details for image $uiState")
 
-    uiState.let {
-        Column(modifier = Modifier.fillMaxSize()) {
-            ControlsBar(getButtonControls(gallery, navController, it))
-            ImageDetailComponent(
-                image = it,
-                onProjectAdd = viewModel::addProject,
-                onProjectRemove = viewModel::removeProject,
-                onCategoryAdd = viewModel::addCategory,
-                onCategoryRemoved = viewModel::removeCategory,
-                onNameValueChange = viewModel::setName,
-                onDescriptionValueChange = viewModel::setDescription,
-                onImageClick = {
-                    navController.navigateSecurely(
-                        ImageFullScreenRoute(NavigationType(imageData = it))
-                    )
-                }
-            )
-        }
+    println("Details for image ${viewModel.imageData}")
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        ControlsBar(getButtonControls(appViewModel.gallery, appViewModel, viewModel.imageData))
+        ImageDetailComponent(
+            image = viewModel.imageData,
+            onProjectAdd = viewModel::addProject,
+            onProjectRemove = viewModel::removeProject,
+            onCategoryAdd = viewModel::addCategory,
+            onCategoryRemoved = viewModel::removeCategory,
+            onNameValueChange = viewModel::setName,
+            onDescriptionValueChange = viewModel::setDescription,
+            onImageClick = {
+                appViewModel.navigate(ImageFullScreenRoute(NavigationType(imageData = it)))
+            }
+        )
     }
 }
 
@@ -91,7 +78,7 @@ fun ImageDetailView(
  */
 private fun getButtonControls(
     gallery: SnapshotStateMap<String, ImageData>,
-    navController: NavHostController,
+    appViewModel: AppViewModel,
     imageData: ImageData
 ) = listOf(
     IconButtonBasicData(
@@ -99,16 +86,16 @@ private fun getButtonControls(
         description = "Remove",
 
         onClick = {
-            deleteFromGallery(imageData, gallery)
+            ImageProcessor.deleteFromGallery(imageData, gallery)
 
             // navigate to gallery
-            navController.navigateSecurely(GalleryRoute)
+            appViewModel.navigate(GalleryRoute)
         },
     ),
     IconButtonBasicData(
         icon = Icons.Rounded.Close,
         description = "Close",
-        onClick = { navController.navigateSecurely(GalleryRoute) }
+        onClick = { appViewModel.navigate(GalleryRoute) }
     )
 )
 

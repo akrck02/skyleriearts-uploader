@@ -31,20 +31,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import androidx.navigation.NavHostController
-import kotlinproject.composeapp.generated.resources.Res
-import kotlinproject.composeapp.generated.resources.gallery
-import kotlinproject.composeapp.generated.resources.numberOfImages
-import org.akrck02.skyleriearts.core.deleteFromGallery
+import org.akrck02.skyleriearts.core.Paths
+import org.akrck02.skyleriearts.core.processor.ImageProcessor
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
-import org.akrck02.skyleriearts.navigation.navigateSecurely
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
+import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
+import skylerieartsuploader.composeapp.generated.resources.Res
+import skylerieartsuploader.composeapp.generated.resources.gallery
+import skylerieartsuploader.composeapp.generated.resources.numberOfImages
 
 /**
  * Selection mode
@@ -58,50 +58,35 @@ enum class SelectionMode {
 /**
  * The image gallery view
  *
- * @param navController The navigation controller
  * @param gallery The gallery to show
  */
 @Composable
-fun GalleryView(
-    navController: NavHostController,
-    gallery: SnapshotStateMap<String, ImageData>
-) {
+fun GalleryView(appViewModel: AppViewModel) {
 
     var selectionMode by remember { mutableStateOf(SelectionMode.None) }
     Column(modifier = Modifier.fillMaxSize()) {
         GalleryViewHeader(
-            gallery = gallery,
+            gallery = appViewModel.gallery,
             onSelectionModeToggled = {
                 selectionMode = when (selectionMode) {
                     SelectionMode.None,
-                    SelectionMode.SelectAll -> {
-                        SelectionMode.Select
-                    }
+                    SelectionMode.SelectAll -> SelectionMode.Select
 
-                    SelectionMode.Select -> {
-                        SelectionMode.None
-                    }
+                    SelectionMode.Select -> SelectionMode.None
                 }
             }
         )
 
         LazyGallery(
-            gallery = gallery,
+            gallery = appViewModel.gallery,
             selectionMode = selectionMode,
             onImageClick = {
-                navController.navigateSecurely(
-                    route = ImageDetailRoute(
-                        item = NavigationType(
-                            imageData = it
-                        )
-                    )
-                )
+                appViewModel.navigate(ImageDetailRoute(NavigationType(it)))
             },
             onSelectedImageToggle = {
-                gallery[it.name]!!.selected = !it.selected
+                appViewModel.toggleSelection(it)
                 selectionMode = SelectionMode.Select
             }
-
         )
     }
 }
@@ -184,7 +169,7 @@ private fun GalleryViewHeaderControls(
                     onClick = {
                         gallery.forEach { (name, image) ->
                             if (image.selected) {
-                                deleteFromGallery(image, gallery)
+                                ImageProcessor.deleteFromGallery(image, gallery)
                                 gallery.remove(name)
                             }
                         }
@@ -241,13 +226,18 @@ private fun LazyGallery(
 
         items(keys, key = { it }) {
 
-            val image = gallery[it]!!
+            val image by remember {
+                mutableStateOf(gallery[it]!!.let {
+                    it.copy(path = "${Paths.basePath}/${it.path}", minPath = "${Paths.basePath}/${it.minPath}")
+                })
+            }
+
             var selected by remember { mutableStateOf(image.selected) }
 
             GalleryImage(
                 data = image,
                 modifier = GalleryViewDefault.imageModifier(minSize),
-                selected = selected,
+                selected = (selectionMode == SelectionMode.SelectAll || selectionMode == SelectionMode.Select) && selected,
                 grayscale = (selectionMode == SelectionMode.SelectAll || selectionMode == SelectionMode.Select) && selected.not(),
                 onClick = {
                     when (selectionMode) {

@@ -10,10 +10,10 @@ import kotlinx.serialization.Transient
  * a compressed version.
  */
 @Serializable
-class ImageData(
+data class ImageData(
     var name: String,
-    val path: String,
-    val minPath: String,
+    var path: String,
+    var minPath: String,
 ) {
     var description: String = ""
     var categories: MutableList<String> = mutableStateListOf()
@@ -24,19 +24,5 @@ class ImageData(
 
     @Transient
     var selected: Boolean = false
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ImageData
-
-        return name == other.name
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + path.hashCode()
-        return result
-    }
+    
 }

@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.core
+package org.akrck02.skyleriearts.core.command
 
 import java.io.File
 import java.util.concurrent.TimeUnit

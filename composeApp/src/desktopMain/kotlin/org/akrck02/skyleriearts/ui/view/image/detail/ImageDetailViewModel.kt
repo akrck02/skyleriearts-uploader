@@ -1,56 +1,41 @@
 package org.akrck02.skyleriearts.ui.view.image.detail
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import org.akrck02.skyleriearts.core.addIfNotPresent
 import org.akrck02.skyleriearts.core.removeIfPresent
 import org.akrck02.skyleriearts.model.ImageData
 import java.util.Locale
 
-class ImageDetailViewModel(
-    data: ImageData
-) : ViewModel() {
+class ImageDetailViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(data)
-    val uiState: StateFlow<ImageData> = _uiState.asStateFlow()
+
+    var imageData by mutableStateOf(ImageData("", "", ""))
 
     fun addProject(project: String) {
-        _uiState.update {
-            it.also { it.projects.addIfNotPresent(project.lowercase(Locale.getDefault())) }
-        }
+        imageData.projects.addIfNotPresent(project.lowercase(Locale.getDefault()))
     }
 
     fun removeProject(project: String) {
-        _uiState.update {
-            it.also { it.projects.removeIfPresent(project.lowercase(Locale.getDefault())) }
-        }
+        imageData.projects.removeIfPresent(project.lowercase(Locale.getDefault()))
     }
 
     fun addCategory(category: String) {
-        _uiState.update {
-            it.also { it.categories.addIfNotPresent(category.lowercase(Locale.getDefault())) }
-        }
+        imageData.categories.addIfNotPresent(category.lowercase(Locale.getDefault()))
     }
 
     fun removeCategory(category: String) {
-        _uiState.update {
-            it.also { it.categories.removeIfPresent(category.lowercase(Locale.getDefault())) }
-        }
+        imageData.categories.removeIfPresent(category.lowercase(Locale.getDefault()))
     }
 
     fun setName(name: String) {
-        _uiState.update {
-            it.also { it.name = name }
-        }
+        imageData.name = name
     }
 
     fun setDescription(description: String) {
-        _uiState.update {
-            it.also { it.description = description }
-        }
+        imageData.description = description
     }
 
 
