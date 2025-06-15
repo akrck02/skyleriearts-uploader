@@ -14,10 +14,12 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Brush
 import androidx.compose.material.icons.outlined.Category
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.UploadFile
+import androidx.compose.material.icons.rounded.Brush
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.Palette
@@ -40,7 +42,9 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.akrck02.skyleriearts.model.ProjectListFilter
 import org.akrck02.skyleriearts.navigation.CategoriesRoute
+import org.akrck02.skyleriearts.navigation.ImagesRoute
 import org.akrck02.skyleriearts.navigation.ProjectsRoute
 import org.akrck02.skyleriearts.navigation.Route
 import org.akrck02.skyleriearts.navigation.UploadRoute
@@ -50,6 +54,7 @@ import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
 import skylerieartsuploader.composeapp.generated.resources.Res
 import skylerieartsuploader.composeapp.generated.resources.categories
+import skylerieartsuploader.composeapp.generated.resources.drawings
 import skylerieartsuploader.composeapp.generated.resources.headerTitle
 import skylerieartsuploader.composeapp.generated.resources.projects
 import skylerieartsuploader.composeapp.generated.resources.upload
@@ -96,17 +101,20 @@ fun NavigationDrawer(
                 var uploadSelected = false
                 var projectsSelected = false
                 var categoriesSelected = false
+                var imagesSelected = false
+
                 when (appViewModel.currentRoute) {
                     UploadRoute -> uploadSelected = true
                     ProjectsRoute -> projectsSelected = true
                     CategoriesRoute -> categoriesSelected = true
+                    ImagesRoute -> imagesSelected = true
                     else -> uploadSelected = true
                 }
 
                 navigationDrawerItem(
                     text = stringResource(Res.string.upload),
                     icon = Icons.Rounded.UploadFile.takeIf { uploadSelected } ?: Icons.Outlined.UploadFile,
-                    contentDescription = "Upload",
+                    contentDescription = stringResource(Res.string.upload),
                     colors = colors,
                     appViewModel = appViewModel,
                     route = UploadRoute,
@@ -117,7 +125,7 @@ fun NavigationDrawer(
                 navigationDrawerItem(
                     text = stringResource(Res.string.categories),
                     icon = Icons.Rounded.Category.takeIf { categoriesSelected } ?: Icons.Outlined.Category,
-                    contentDescription = "Categories",
+                    contentDescription = stringResource(Res.string.categories),
                     colors = colors,
                     appViewModel = appViewModel,
                     route = CategoriesRoute,
@@ -128,11 +136,25 @@ fun NavigationDrawer(
                 navigationDrawerItem(
                     text = stringResource(Res.string.projects),
                     icon = Icons.Rounded.Palette.takeIf { projectsSelected } ?: Icons.Outlined.Palette,
-                    contentDescription = "Projects",
+                    contentDescription = stringResource(Res.string.projects),
                     colors = colors,
                     appViewModel = appViewModel,
                     route = ProjectsRoute,
                     selected = projectsSelected,
+                    mini = minibar
+                ) {
+                    ProjectsRoute.filter = ProjectListFilter.None
+                    ProjectsRoute.filterObjectId = null
+                }
+
+                navigationDrawerItem(
+                    text = stringResource(Res.string.drawings),
+                    icon = Icons.Rounded.Brush.takeIf { imagesSelected } ?: Icons.Outlined.Brush,
+                    contentDescription = stringResource(Res.string.drawings),
+                    colors = colors,
+                    appViewModel = appViewModel,
+                    route = ImagesRoute,
+                    selected = imagesSelected,
                     mini = minibar
                 )
 
@@ -169,7 +191,8 @@ private fun navigationDrawerItem(
     appViewModel: AppViewModel,
     route: Route,
     selected: Boolean = false,
-    mini: Boolean = false
+    mini: Boolean = false,
+    preProcess: () -> Unit = {}
 ) {
 
     NavigationDrawerItem(
@@ -199,6 +222,7 @@ private fun navigationDrawerItem(
             .pointerHoverIcon(PointerIcon.Hand),
         colors = colors,
         onClick = {
+            preProcess()
             appViewModel.navigate(route)
         }
 

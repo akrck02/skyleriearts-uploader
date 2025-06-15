@@ -10,10 +10,12 @@ import org.akrck02.skyleriearts.navigation.AppNavigationType
 import org.akrck02.skyleriearts.navigation.CategoriesRoute
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
+import org.akrck02.skyleriearts.navigation.ImagesRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
 import org.akrck02.skyleriearts.navigation.ProjectsRoute
 import org.akrck02.skyleriearts.navigation.UploadRoute
 import org.akrck02.skyleriearts.ui.view.categories.CategoriesView
+import org.akrck02.skyleriearts.ui.view.image.ImagesView
 import org.akrck02.skyleriearts.ui.view.image.detail.ImageDetailView
 import org.akrck02.skyleriearts.ui.view.image.detail.ImageDetailViewModel
 import org.akrck02.skyleriearts.ui.view.image.fullscreen.ImageFullScreenView
@@ -42,6 +44,13 @@ fun NavGraphBuilder.categoriesRoute(appViewModel: AppViewModel) {
         enterTransition = { fadeIn(tween(200, 400)) },
         exitTransition = { fadeOut() }
     ) { CategoriesView(appViewModel) }
+}
+
+fun NavGraphBuilder.imagesRoute(appViewModel: AppViewModel) {
+    composable<ImagesRoute>(
+        enterTransition = { fadeIn(tween(200, 400)) },
+        exitTransition = { fadeOut() }
+    ) { ImagesView(appViewModel) }
 }
 
 fun NavGraphBuilder.imageDetailRoute(appViewModel: AppViewModel) {

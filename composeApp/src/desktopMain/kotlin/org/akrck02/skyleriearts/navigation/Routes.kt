@@ -7,6 +7,8 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
+import org.akrck02.skyleriearts.model.GalleryFilter
+import org.akrck02.skyleriearts.model.ProjectListFilter
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 
 @Serializable
@@ -25,13 +27,22 @@ data object UploadRoute : Route()
 @Serializable
 @SerialName("/projects")
 data object ProjectsRoute : Route() {
-    var filter: Int? = null
+    var filter: ProjectListFilter = ProjectListFilter.None
     var filterObjectId: String? = null
 }
 
 @Serializable
 @SerialName("/categories")
 data object CategoriesRoute : Route()
+
+
+@Serializable
+@SerialName("/images")
+data object ImagesRoute : Route() {
+    var filter: GalleryFilter = GalleryFilter.None
+    var filterObjectId: String? = null
+}
+
 
 @Serializable
 @SerialName("/images/detail")

@@ -8,6 +8,7 @@
     <string name="upload">Upload</string>
     <string name="gallery">Gallery</string>
     <string name="projects">Projects</string>
+    <string name="drawings">Drawings</string>
     <string name="noThingsHereAddOne">There are not %1$s here, feel free to add one.</string>
     <string name="categories">Categories</string>
     <string name="name">Name</string>

@@ -11,7 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
+import org.akrck02.skyleriearts.ui.theme.DEFAULT_IMAGE_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 
 
@@ -40,7 +40,7 @@ class GalleryImageDefault {
          * @return The shape
          */
         fun imageShape(round: Boolean): RoundedCornerShape =
-            if (round) TOTAL_ROUNDED_SHAPE else DEFAULT_ROUNDED_SHAPE
+            if (round) TOTAL_ROUNDED_SHAPE else DEFAULT_IMAGE_ROUNDED_SHAPE
 
         /**
          * Get the default image card surface modifier

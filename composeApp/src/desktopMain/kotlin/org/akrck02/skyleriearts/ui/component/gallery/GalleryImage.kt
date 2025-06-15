@@ -22,6 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.core.processor.FileProcessor
@@ -54,7 +56,6 @@ fun GalleryImage(
     onClick: () -> Unit = {}
 ) {
     val shape = GalleryImageDefault.imageShape(round)
-
     Column(verticalArrangement = Arrangement.Bottom) {
         Box {
             ImageSurface(
@@ -139,7 +140,7 @@ private fun ImageSurface(
 
     Surface(
         shape = shape,
-        modifier = GalleryImageDefault.surfaceModifier(modifier, shape),
+        modifier = GalleryImageDefault.surfaceModifier(modifier, shape).pointerHoverIcon(PointerIcon.Hand),
         color = Color.Transparent,
         onClick = onClick,
     ) {
