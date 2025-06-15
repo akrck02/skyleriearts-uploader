@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.view.gallery
+package org.akrck02.skyleriearts.ui.view.projects
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 
-class GalleryViewDefault {
+class ProjectViewDefault {
     companion object {
 
         fun imageModifier(minSize: Dp) = Modifier.padding(

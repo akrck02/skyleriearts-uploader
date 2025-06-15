@@ -11,9 +11,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.akrck02.skyleriearts.navigation.UploadRoute
 import org.akrck02.skyleriearts.ui.component.navigation.NavigationDrawer
-import org.akrck02.skyleriearts.ui.component.route.galleryRoute
+import org.akrck02.skyleriearts.ui.component.route.categoriesRoute
 import org.akrck02.skyleriearts.ui.component.route.imageDetailRoute
 import org.akrck02.skyleriearts.ui.component.route.imageFullScreenRoute
+import org.akrck02.skyleriearts.ui.component.route.projectsRoute
 import org.akrck02.skyleriearts.ui.component.route.uploadRoute
 import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
@@ -41,7 +42,8 @@ fun App(appViewModel: AppViewModel = koinViewModel()) {
             ) {
                 uploadRoute(appViewModel)
                 imageDetailRoute(appViewModel)
-                galleryRoute(appViewModel)
+                projectsRoute(appViewModel)
+                categoriesRoute(appViewModel)
                 imageFullScreenRoute(appViewModel)
             }
         }

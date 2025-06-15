@@ -19,7 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import org.akrck02.skyleriearts.navigation.GalleryRoute
+import org.akrck02.skyleriearts.navigation.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.drag.DragComposable
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -55,9 +55,9 @@ private fun UploadSection(appViewModel: AppViewModel) {
             backgroundColor = MaterialTheme.colors.background
         )
 
-        appViewModel.navigate(GalleryRoute)
+        appViewModel.navigate(ProjectsRoute)
     }
-    
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

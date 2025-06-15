@@ -7,15 +7,17 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import org.akrck02.skyleriearts.navigation.AppNavigationType
-import org.akrck02.skyleriearts.navigation.GalleryRoute
+import org.akrck02.skyleriearts.navigation.CategoriesRoute
 import org.akrck02.skyleriearts.navigation.ImageDetailRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.navigation.ProjectsRoute
 import org.akrck02.skyleriearts.navigation.UploadRoute
-import org.akrck02.skyleriearts.ui.view.gallery.GalleryView
+import org.akrck02.skyleriearts.ui.view.categories.CategoriesView
 import org.akrck02.skyleriearts.ui.view.image.detail.ImageDetailView
 import org.akrck02.skyleriearts.ui.view.image.detail.ImageDetailViewModel
 import org.akrck02.skyleriearts.ui.view.image.fullscreen.ImageFullScreenView
+import org.akrck02.skyleriearts.ui.view.projects.ProjectsView
 import org.akrck02.skyleriearts.ui.view.upload.UploadView
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -28,11 +30,18 @@ fun NavGraphBuilder.uploadRoute(appViewModel: AppViewModel) {
     ) { UploadView(appViewModel) }
 }
 
-fun NavGraphBuilder.galleryRoute(appViewModel: AppViewModel) {
-    composable<GalleryRoute>(
+fun NavGraphBuilder.projectsRoute(appViewModel: AppViewModel) {
+    composable<ProjectsRoute>(
         enterTransition = { fadeIn(tween(200, 400)) },
         exitTransition = { fadeOut() }
-    ) { GalleryView(appViewModel) }
+    ) { ProjectsView(appViewModel) }
+}
+
+fun NavGraphBuilder.categoriesRoute(appViewModel: AppViewModel) {
+    composable<CategoriesRoute>(
+        enterTransition = { fadeIn(tween(200, 400)) },
+        exitTransition = { fadeOut() }
+    ) { CategoriesView(appViewModel) }
 }
 
 fun NavGraphBuilder.imageDetailRoute(appViewModel: AppViewModel) {

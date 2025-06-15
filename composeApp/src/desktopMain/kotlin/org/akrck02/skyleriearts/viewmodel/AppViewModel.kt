@@ -2,6 +2,7 @@ package org.akrck02.skyleriearts.viewmodel
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
@@ -24,6 +25,28 @@ class AppViewModel : ViewModel() {
     var currentRoute: Route by mutableStateOf(UploadRoute)
 
     var gallery: SnapshotStateMap<String, ImageData> = FileProcessor.getCurrentGalleryFromFile()
+    var categoryMap: SnapshotStateMap<String, MutableSet<String>> = mutableStateMapOf<String, MutableSet<String>>()
+    var projectMap: SnapshotStateMap<String, MutableSet<ImageData>> = mutableStateMapOf()
+
+    init {
+        loadGallery()
+    }
+
+    fun loadGallery() {
+        gallery.forEach { k, image ->
+            image.categories.forEach { category ->
+
+                if (null == categoryMap[category]) categoryMap[category] = mutableSetOf<String>()
+
+                image.projects.forEach { project ->
+                    categoryMap[category]?.add(project)
+
+                    if (null == projectMap[project]) projectMap[project] = mutableSetOf<ImageData>()
+                    projectMap[project]?.add(image)
+                }
+            }
+        }
+    }
 
     fun save() {
         FileProcessor.saveGalleryToFile(gallery)

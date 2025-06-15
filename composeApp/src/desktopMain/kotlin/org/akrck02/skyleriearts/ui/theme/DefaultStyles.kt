@@ -8,3 +8,4 @@ val DEFAULT_WINDOW_HEIGHT = 1080.dp
 val DEFAULT_ROUNDED_SHAPE = RoundedCornerShape(20)
 val MIN_ROUNDED_SHAPE = RoundedCornerShape(10.dp)
 val TOTAL_ROUNDED_SHAPE = RoundedCornerShape(100)
+

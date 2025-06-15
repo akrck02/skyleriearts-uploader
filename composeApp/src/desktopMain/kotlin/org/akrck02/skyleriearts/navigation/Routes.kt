@@ -23,8 +23,15 @@ data object UploadRoute : Route()
 
 
 @Serializable
-@SerialName("/gallery")
-data object GalleryRoute : Route()
+@SerialName("/projects")
+data object ProjectsRoute : Route() {
+    var filter: Int? = null
+    var filterObjectId: String? = null
+}
+
+@Serializable
+@SerialName("/categories")
+data object CategoriesRoute : Route()
 
 @Serializable
 @SerialName("/images/detail")

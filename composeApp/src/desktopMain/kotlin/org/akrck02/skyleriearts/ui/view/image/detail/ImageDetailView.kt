@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.core.processor.ImageProcessor
 import org.akrck02.skyleriearts.model.ImageData
 import org.akrck02.skyleriearts.model.TagType
-import org.akrck02.skyleriearts.navigation.GalleryRoute
 import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
 import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.navigation.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.control.ControlsBar
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
@@ -89,13 +89,13 @@ private fun getButtonControls(
             ImageProcessor.deleteFromGallery(imageData, gallery)
 
             // navigate to gallery
-            appViewModel.navigate(GalleryRoute)
+            appViewModel.navigate(ProjectsRoute)
         },
     ),
     IconButtonBasicData(
         icon = Icons.Rounded.Close,
         description = "Close",
-        onClick = { appViewModel.navigate(GalleryRoute) }
+        onClick = { appViewModel.navigate(ProjectsRoute) }
     )
 )
 

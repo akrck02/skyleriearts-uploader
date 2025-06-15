@@ -29,6 +29,8 @@ import androidx.compose.ui.draganddrop.DragAndDropTarget
 import androidx.compose.ui.draganddrop.DragData
 import androidx.compose.ui.draganddrop.dragData
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import java.io.File
@@ -96,7 +98,8 @@ fun DragComposable(
             .dragAndDropTarget(
                 shouldStartDragAndDrop = { true },
                 target = dragAndDropTarget
-            ),
+            )
+            .pointerHoverIcon(PointerIcon.Hand),
         color = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
     ) {
         Column(

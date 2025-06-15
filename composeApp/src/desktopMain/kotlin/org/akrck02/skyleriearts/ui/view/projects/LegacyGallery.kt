@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.ui.view.gallery
+package org.akrck02.skyleriearts.ui.view.projects
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -46,6 +46,7 @@ import skylerieartsuploader.composeapp.generated.resources.Res
 import skylerieartsuploader.composeapp.generated.resources.gallery
 import skylerieartsuploader.composeapp.generated.resources.numberOfImages
 
+
 /**
  * Selection mode
  */
@@ -55,14 +56,8 @@ enum class SelectionMode {
     None
 }
 
-/**
- * The image gallery view
- *
- * @param gallery The gallery to show
- */
 @Composable
-fun GalleryView(appViewModel: AppViewModel) {
-
+fun LegacyGalleryView(appViewModel: AppViewModel) {
     var selectionMode by remember { mutableStateOf(SelectionMode.None) }
     Column(modifier = Modifier.fillMaxSize()) {
         GalleryViewHeader(
@@ -217,7 +212,7 @@ private fun LazyGallery(
     val minSize = 150.dp
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize),
-        modifier = GalleryViewDefault.lazyGridModifier,
+        modifier = ProjectViewDefault.lazyGridModifier,
         verticalArrangement = Arrangement.Top,
     ) {
 
@@ -236,7 +231,7 @@ private fun LazyGallery(
 
             GalleryImage(
                 data = image,
-                modifier = GalleryViewDefault.imageModifier(minSize),
+                modifier = ProjectViewDefault.imageModifier(minSize),
                 selected = (selectionMode == SelectionMode.SelectAll || selectionMode == SelectionMode.Select) && selected,
                 grayscale = (selectionMode == SelectionMode.SelectAll || selectionMode == SelectionMode.Select) && selected.not(),
                 onClick = {
