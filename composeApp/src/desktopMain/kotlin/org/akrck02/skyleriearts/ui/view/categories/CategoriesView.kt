@@ -13,13 +13,7 @@ import androidx.compose.foundation.onClick
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Collections
-import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,12 +21,13 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.akrck02.skyleriearts.model.ProjectListFilter
-import org.akrck02.skyleriearts.navigation.ProjectsRoute
+import org.akrck02.skyleriearts.constant.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.header.ListHeader
-import org.akrck02.skyleriearts.ui.component.tag.InfoIconTag
+import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
+import org.akrck02.skyleriearts.viewmodel.CategoryViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import skylerieartsuploader.composeapp.generated.resources.gallery
 
 /**
@@ -42,14 +37,13 @@ import skylerieartsuploader.composeapp.generated.resources.gallery
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CategoriesView(appViewModel: AppViewModel) {
-    val categories by mutableStateOf(appViewModel.categoryMap.keys.toMutableStateList().sorted())
+fun CategoriesView(appViewModel: AppViewModel, categoryViewModel: CategoryViewModel = koinViewModel()) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-            stickyHeader { ListHeader("You have ${appViewModel.categoryMap.size} categories right now.") }
+            stickyHeader { ListHeader("You have ${categoryViewModel.categories.size} categories right now.") }
 
-            items(categories) { category ->
-                CategoryRow(appViewModel, category) {
+            items(categoryViewModel.categories) { category ->
+                CategoryRow(category) {
                     ProjectsRoute.filter = ProjectListFilter.Category
                     ProjectsRoute.filterObjectId = category
                     appViewModel.navigate(ProjectsRoute)
@@ -61,7 +55,7 @@ fun CategoriesView(appViewModel: AppViewModel) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CategoryRow(appViewModel: AppViewModel, name: String, callback: () -> Unit) {
+private fun CategoryRow(name: String, callback: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(start = 40.dp, end = 40.dp, bottom = 10.dp, top = 10.dp)
@@ -90,11 +84,11 @@ private fun CategoryRow(appViewModel: AppViewModel, name: String, callback: () -
                     style = MaterialTheme.typography.overline
                 )
 
-                val imageNumber = appViewModel.run { categoryMap[name]?.sumOf { projectMap[it]?.size ?: 0 } ?: 0 }
+                // val imageNumber = appViewModel.run { categoryMap[name]?.sumOf { projectMap[it]?.size ?: 0 } ?: 0 }
 
                 Row {
-                    InfoIconTag("${appViewModel.categoryMap[name]?.size}", Icons.Outlined.Palette)
-                    InfoIconTag("$imageNumber", Icons.Outlined.Collections)
+                    //  InfoIconTag("${appViewModel.categoryMap[name]?.size}", Icons.Outlined.Palette)
+                    // InfoIconTag("$imageNumber", Icons.Outlined.Collections)
                 }
             }
         }

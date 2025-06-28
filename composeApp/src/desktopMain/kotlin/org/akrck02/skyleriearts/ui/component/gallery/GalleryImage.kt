@@ -26,8 +26,8 @@ import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.core.processor.FileProcessor
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.service.FileService
+import org.akrck02.skyleriearts.ui.model.GalleryImage
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 import java.nio.file.Files
 import kotlin.io.path.Path
@@ -46,7 +46,7 @@ import kotlin.io.path.Path
  */
 @Composable
 fun GalleryImage(
-    data: ImageData,
+    data: GalleryImage,
     modifier: Modifier = Modifier,
     showInfoChip: Boolean = false,
     infoChipLabel: String = "New",
@@ -128,7 +128,7 @@ private fun ImageInfoChip(label: String) {
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 private fun ImageSurface(
-    data: ImageData,
+    data: GalleryImage,
     shape: RoundedCornerShape,
     modifier: Modifier,
     round: Boolean,
@@ -136,7 +136,6 @@ private fun ImageSurface(
     onClick: () -> Unit,
     grayscale: Boolean
 ) {
-
 
     Surface(
         shape = shape,
@@ -149,9 +148,10 @@ private fun ImageSurface(
             return@Surface
         }
 
+        val bytes = FileService.loadImage(data.minPath)
         Image(
             modifier = GalleryImageDefault.imageModifier(round, selected),
-            bitmap = FileProcessor.loadImageFrom(data.minPath),
+            bitmap = bytes,
             contentDescription = data.name,
             contentScale = ContentScale.Crop,
             colorFilter = if (grayscale)

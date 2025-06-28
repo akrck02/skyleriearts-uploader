@@ -42,14 +42,15 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import org.akrck02.skyleriearts.model.ProjectListFilter
-import org.akrck02.skyleriearts.navigation.CategoriesRoute
-import org.akrck02.skyleriearts.navigation.ImagesRoute
-import org.akrck02.skyleriearts.navigation.ProjectsRoute
-import org.akrck02.skyleriearts.navigation.Route
-import org.akrck02.skyleriearts.navigation.UploadRoute
+import org.akrck02.skyleriearts.constant.CategoriesRoute
+import org.akrck02.skyleriearts.constant.ImagesRoute
+import org.akrck02.skyleriearts.constant.ProjectsRoute
+import org.akrck02.skyleriearts.constant.Route
+import org.akrck02.skyleriearts.constant.UploadRoute
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.model.filter.GalleryFilter
+import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
 import skylerieartsuploader.composeapp.generated.resources.Res
@@ -156,7 +157,10 @@ fun NavigationDrawer(
                     route = ImagesRoute,
                     selected = imagesSelected,
                     mini = minibar
-                )
+                ) {
+                    ImagesRoute.filter = GalleryFilter.None
+                    ImagesRoute.filterObjectId = null
+                }
 
                 Column(
                     modifier = Modifier.fillMaxHeight(1f).fillMaxWidth().padding(20.dp),

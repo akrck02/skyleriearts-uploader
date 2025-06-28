@@ -15,8 +15,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import org.akrck02.skyleriearts.core.processor.FileProcessor
-import org.akrck02.skyleriearts.navigation.NavigationType
+import org.akrck02.skyleriearts.service.FileService
+import org.akrck02.skyleriearts.ui.model.GalleryImage
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import java.nio.file.Files
 import kotlin.io.path.Path
@@ -25,10 +25,11 @@ import kotlin.io.path.Path
 @Composable
 fun ImageFullScreenView(
     appViewModel: AppViewModel,
-    data: NavigationType
+    image: GalleryImage?
 ) {
 
-    val imageData = data.imageData
+    checkNotNull(image) { "image not selected" }
+    val imageData = image
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -51,7 +52,7 @@ fun ImageFullScreenView(
         ) {
             Image(
                 modifier = Modifier.fillMaxSize().padding(20.dp),
-                bitmap = FileProcessor.loadImageFrom(imageData.path),
+                bitmap = FileService.loadImage(imageData.path),
                 contentDescription = imageData.name,
                 contentScale = ContentScale.Inside
             )

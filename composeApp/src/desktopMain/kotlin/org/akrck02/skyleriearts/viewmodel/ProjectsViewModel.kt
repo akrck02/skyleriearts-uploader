@@ -4,10 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import org.akrck02.skyleriearts.model.ProjectListFilter
-import org.akrck02.skyleriearts.navigation.ProjectsRoute
+import org.akrck02.skyleriearts.constant.ProjectsRoute
+import org.akrck02.skyleriearts.data.GalleryDataAccess
+import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 
-class ProjectsViewModel(appViewModel: AppViewModel) : ViewModel() {
+class ProjectsViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() {
 
     // region variables
     private var _projects = mutableListOf<String>()
@@ -18,15 +19,19 @@ class ProjectsViewModel(appViewModel: AppViewModel) : ViewModel() {
     // endregion state
 
     init {
-        loadProjects(appViewModel)
+        reload()
     }
 
-    fun loadProjects(appViewModel: AppViewModel) {
+    fun loadProjects() {
         projects = when (ProjectsRoute.filter) {
-            ProjectListFilter.Name -> mutableListOf()
-            ProjectListFilter.Category -> appViewModel.categoryMap[ProjectsRoute.filterObjectId]?.toMutableList() ?: mutableListOf()
-            else -> appViewModel.projectMap.keys.toMutableList()
-        }.sorted() as MutableList<String>
+            ProjectListFilter.Name -> galleryDataAccess.searchProjectsByName(ProjectsRoute.filterObjectId ?: "")
+            ProjectListFilter.Category -> galleryDataAccess.getProjectsByCategory(ProjectsRoute.filterObjectId ?: "")
+            else -> galleryDataAccess.getProjects()
+        }.toMutableList()
+    }
+
+    fun reload() {
+        loadProjects()
     }
 
 }

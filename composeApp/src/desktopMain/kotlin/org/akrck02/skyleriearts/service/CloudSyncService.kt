@@ -1,11 +1,10 @@
-package org.akrck02.skyleriearts.core.service
+package org.akrck02.skyleriearts.service
 
-object FileUploader {
+object CloudSyncService : ICloudSyncService {
 
     const val DESTINATION_PATH = "/home/dev/temp"
 
-    fun uploadCurrentFiles() {
-
+    override fun sync() {
 //        val pwd = Paths.get("").toAbsolutePath().toString()
 //
 //        val resources = File("$pwd/resources")
@@ -15,7 +14,5 @@ object FileUploader {
 //
 //        val dataJson = File("$pwd/${FileProcessor.GALLERY_FILE_PATH}")
 //        dataJson.copyRecursively(File("$DESTINATION_PATH/resources/data/images.json"), true)
-
     }
-
 }

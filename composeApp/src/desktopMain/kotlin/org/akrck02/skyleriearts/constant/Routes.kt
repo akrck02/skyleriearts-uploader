@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.navigation
+package org.akrck02.skyleriearts.constant
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
@@ -7,8 +7,9 @@ import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.serializer
-import org.akrck02.skyleriearts.model.GalleryFilter
-import org.akrck02.skyleriearts.model.ProjectListFilter
+import org.akrck02.skyleriearts.ui.model.GalleryImage
+import org.akrck02.skyleriearts.ui.model.filter.GalleryFilter
+import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 
 @Serializable
@@ -46,15 +47,15 @@ data object ImagesRoute : Route() {
 
 @Serializable
 @SerialName("/images/detail")
-data class ImageDetailRoute(
-    val item: NavigationType
-) : Route()
+object ImageDetailRoute : Route() {
+    var image: GalleryImage? = null
+}
 
 @Serializable
 @SerialName("/images/view")
-data class ImageFullScreenRoute(
-    val item: NavigationType
-) : Route()
+object ImageFullScreenRoute : Route() {
+    var image: GalleryImage? = null
+}
 
 /**
  * Check if the given route is the current one

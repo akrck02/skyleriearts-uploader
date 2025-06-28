@@ -5,35 +5,53 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.core.Paths
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.constant.ImageFullScreenRoute
+import org.akrck02.skyleriearts.constant.ImagesRoute
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
+import org.akrck02.skyleriearts.ui.component.header.FilterHeader
 import org.akrck02.skyleriearts.ui.component.header.ListHeader
+import org.akrck02.skyleriearts.ui.model.GalleryImage
+import org.akrck02.skyleriearts.ui.model.filter.GalleryFilter
 import org.akrck02.skyleriearts.ui.view.projects.ProjectViewDefault
 import org.akrck02.skyleriearts.ui.view.projects.SelectionMode
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
+import org.akrck02.skyleriearts.viewmodel.GalleryViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ImagesView(appViewModel: AppViewModel) {
-
-    val gallery = appViewModel.gallery
+fun ImagesView(appViewModel: AppViewModel, galleryViewModel: GalleryViewModel = koinViewModel()) {
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        ListHeader("You have ${gallery.size} drawings.")
+        ListHeader("You have ${galleryViewModel.images.size} drawings.")
+        ImagesRoute.filter.takeIf { GalleryFilter.None != it }?.also {
+            ImagesRoute.filterObjectId?.also { filter ->
+                FilterHeader(listOf(filter to Icons.Rounded.Palette)) {
+                    ImagesRoute.filter = GalleryFilter.None
+                    galleryViewModel.reload()
+                }
+            }
+        }
+
         LazyGallery(
-            gallery = gallery,
+            gallery = galleryViewModel.images,
             selectionMode = SelectionMode.None,
-            onImageClick = {},
+            onImageClick = {
+                ImageFullScreenRoute.image = it
+                appViewModel.navigate(ImageFullScreenRoute)
+            },
             onSelectedImageToggle = {}
         )
+
+
     }
 
 }
@@ -49,10 +67,10 @@ fun ImagesView(appViewModel: AppViewModel) {
  */
 @Composable
 private fun LazyGallery(
-    gallery: SnapshotStateMap<String, ImageData>,
+    gallery: MutableList<GalleryImage>,
     selectionMode: SelectionMode,
-    onImageClick: (ImageData) -> Unit,
-    onSelectedImageToggle: (ImageData) -> Unit
+    onImageClick: (GalleryImage) -> Unit,
+    onSelectedImageToggle: (GalleryImage) -> Unit
 ) {
     val minSize = 150.dp
     LazyVerticalGrid(
@@ -61,16 +79,7 @@ private fun LazyGallery(
         verticalArrangement = Arrangement.Top,
     ) {
 
-        val keys: MutableList<String> = mutableListOf()
-        keys.addAll(gallery.keys)
-
-        items(keys, key = { it }) {
-
-            val image by remember {
-                mutableStateOf(gallery[it]!!.let {
-                    it.copy(path = "${Paths.basePath}/${it.path}", minPath = "${Paths.basePath}/${it.minPath}")
-                })
-            }
+        items(gallery, key = { it }) { image ->
 
             var selected by remember { mutableStateOf(image.selected) }
 

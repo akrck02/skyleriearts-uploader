@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.core.processor
+package org.akrck02.skyleriearts.service
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.graphics.ImageBitmap
@@ -6,27 +6,19 @@ import androidx.compose.ui.graphics.toComposeImageBitmap
 import com.eygraber.uri.UriCodec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.akrck02.skyleriearts.core.Paths
-import org.akrck02.skyleriearts.core.buildMutableStateMap
-import org.akrck02.skyleriearts.core.validExtensions
+import org.akrck02.skyleriearts.data.constant.Paths
+import org.akrck02.skyleriearts.data.constant.validExtensions
+import org.akrck02.skyleriearts.data.model.Image
 import org.akrck02.skyleriearts.exception.ErrorCode
 import org.akrck02.skyleriearts.exception.SoftwareException
-import org.akrck02.skyleriearts.model.ImageData
-import org.jetbrains.skia.Image
+import org.akrck02.skyleriearts.extension.buildMutableStateMap
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
-object FileProcessor {
+object FileService : IFileService {
 
-    /**
-     * Add the file to the queue if needed
-     * if the file already exists, returns
-     * the current file.
-     * @param path The file path
-     * @return The new file
-     */
-    fun addFileToResources(path: String): File {
+    override fun add(path: String): File {
 
         // If it is directory return
         val file = File(path)
@@ -47,17 +39,11 @@ object FileProcessor {
         newFile = file.copyTo(newFile)
 
         // compress the image
-        ImageProcessor.compress(newFile.path)
+        ImageManipulationService.compress(newFile.path)
         return newFile
     }
 
-
-    /**
-     * Remove a file
-     * @param path The file path
-     * @throws SoftwareException if an error occurs
-     */
-    fun removeFile(path: String) {
+    override fun remove(path: String) {
 
         // If it is directory return
         val file = File(path)
@@ -83,54 +69,33 @@ object FileProcessor {
 
     }
 
-
-    /**
-     * Get current gallery from file,
-     * create the file if it does not exist
-     * @return The map of names and image data
-     */
-    fun getCurrentGalleryFromFile(): SnapshotStateMap<String, ImageData> {
-
+    override fun getGallery(): SnapshotStateMap<String, Image> {
         val currentFile = File(Paths.galleryFilePath)
         if (currentFile.exists().not()) {
             Files.createDirectories(java.nio.file.Paths.get(currentFile.parent))
             currentFile.writeText(
-                Json.encodeToString<Map<String, ImageData>>(mapOf()),
+                Json.encodeToString<Map<String, Image>>(mapOf()),
                 Charsets.UTF_8
             )
         }
 
         val jsonData = currentFile.readText(Charsets.UTF_8)
-        val map = Json.decodeFromString<Map<String, ImageData>>(UriCodec.decode(jsonData))
+        val map = Json.decodeFromString<Map<String, Image>>(UriCodec.decode(jsonData))
         return buildMutableStateMap {
             map.entries.forEach { (k, v) -> put(k, v) }
         }
     }
 
-
-    /**
-     * Save the current galley data to a file
-     * @param gallery The gallery data (image name -> image data)
-     */
-    fun saveGalleryToFile(gallery: Map<String, ImageData>) {
-
-        gallery.entries.forEach { (k, _) -> gallery[k]?.new = false }
-
+    override fun saveGallery(gallery: Map<String, Image>) {
         val currentFile = File(Paths.galleryFilePath)
         currentFile.writeText(
-            Json.encodeToString<Map<String, ImageData>>(gallery),
+            Json.encodeToString<Map<String, Image>>(gallery),
             Charsets.UTF_8
         )
-
     }
 
-    /**
-     * Load an image from path
-     * @param path The file path
-     * @return The loaded image
-     */
-    fun loadImageFrom(path: String): ImageBitmap {
+    override fun loadImage(path: String): ImageBitmap {
         val bytes = Files.readAllBytes(Path.of(path)) // path relative to project root
-        return Image.makeFromEncoded(bytes).toComposeImageBitmap()
+        return org.jetbrains.skia.Image.makeFromEncoded(bytes).toComposeImageBitmap()
     }
 }

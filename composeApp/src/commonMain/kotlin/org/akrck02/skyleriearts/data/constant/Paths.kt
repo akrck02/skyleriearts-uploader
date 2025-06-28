@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.core
+package org.akrck02.skyleriearts.data.constant
 
 import io.github.cdimascio.dotenv.Dotenv
 import io.github.cdimascio.dotenv.dotenv
@@ -53,4 +53,3 @@ object Paths {
     }
 
 }
-

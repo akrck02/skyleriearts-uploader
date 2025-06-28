@@ -7,6 +7,8 @@ import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 
@@ -44,7 +46,7 @@ fun IconButton(
         shape = TOTAL_ROUNDED_SHAPE,
         border = null,
         elevation = null,
-        modifier = modifier,
+        modifier = modifier.pointerHoverIcon(PointerIcon.Hand),
     ) {
         Icon(data.icon, data.description, modifier = iconModifier)
     }

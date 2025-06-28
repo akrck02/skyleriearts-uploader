@@ -1,18 +1,18 @@
-package org.akrck02.skyleriearts.ui.view.image.detail
+package org.akrck02.skyleriearts.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import org.akrck02.skyleriearts.core.addIfNotPresent
-import org.akrck02.skyleriearts.core.removeIfPresent
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.extension.addIfNotPresent
+import org.akrck02.skyleriearts.extension.removeIfPresent
+import org.akrck02.skyleriearts.ui.model.GalleryImage
 import java.util.Locale
 
 class ImageDetailViewModel : ViewModel() {
 
 
-    var imageData by mutableStateOf(ImageData("", "", ""))
+    var imageData by mutableStateOf(GalleryImage("", "", ""))
 
     fun addProject(project: String) {
         imageData.projects.addIfNotPresent(project.lowercase(Locale.getDefault()))

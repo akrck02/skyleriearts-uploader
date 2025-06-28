@@ -17,23 +17,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.core.processor.ImageProcessor
-import org.akrck02.skyleriearts.model.ImageData
-import org.akrck02.skyleriearts.model.TagType
-import org.akrck02.skyleriearts.navigation.ImageFullScreenRoute
-import org.akrck02.skyleriearts.navigation.NavigationType
-import org.akrck02.skyleriearts.navigation.ProjectsRoute
+import org.akrck02.skyleriearts.constant.ImageFullScreenRoute
+import org.akrck02.skyleriearts.constant.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.control.ControlsBar
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.component.input.MaterialTextField
 import org.akrck02.skyleriearts.ui.component.modal.MaterialAlertInputDialog
 import org.akrck02.skyleriearts.ui.component.tag.TagContainer
+import org.akrck02.skyleriearts.ui.model.GalleryImage
+import org.akrck02.skyleriearts.ui.model.filter.TagType
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
+import org.akrck02.skyleriearts.viewmodel.ImageDetailViewModel
 import org.jetbrains.compose.resources.stringResource
 import skylerieartsuploader.composeapp.generated.resources.Res
 import skylerieartsuploader.composeapp.generated.resources.addNew
@@ -53,11 +51,10 @@ import java.util.Locale
 @Composable
 fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel) {
 
-
     println("Details for image ${viewModel.imageData}")
 
     Column(modifier = Modifier.fillMaxSize()) {
-        ControlsBar(getButtonControls(appViewModel.gallery, appViewModel, viewModel.imageData))
+        ControlsBar(getButtonControls(appViewModel, viewModel.imageData))
         ImageDetailComponent(
             image = viewModel.imageData,
             onProjectAdd = viewModel::addProject,
@@ -67,7 +64,8 @@ fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel)
             onNameValueChange = viewModel::setName,
             onDescriptionValueChange = viewModel::setDescription,
             onImageClick = {
-                appViewModel.navigate(ImageFullScreenRoute(NavigationType(imageData = it)))
+                ImageFullScreenRoute.image = it
+                appViewModel.navigate(ImageFullScreenRoute)
             }
         )
     }
@@ -77,16 +75,15 @@ fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel)
  * Get button controls
  */
 private fun getButtonControls(
-    gallery: SnapshotStateMap<String, ImageData>,
     appViewModel: AppViewModel,
-    imageData: ImageData
+    imageData: GalleryImage
 ) = listOf(
     IconButtonBasicData(
         icon = Icons.Rounded.DeleteOutline,
         description = "Remove",
 
         onClick = {
-            ImageProcessor.deleteFromGallery(imageData, gallery)
+//            ImageProcessor.deleteFromGallery(imageData, gallery)
 
             // navigate to gallery
             appViewModel.navigate(ProjectsRoute)
@@ -105,14 +102,14 @@ private fun getButtonControls(
  */
 @Composable
 private fun ImageDetailComponent(
-    image: ImageData,
+    image: GalleryImage,
     onProjectAdd: (String) -> Unit,
     onProjectRemove: (String) -> Unit,
     onCategoryAdd: (String) -> Unit,
     onCategoryRemoved: (String) -> Unit,
     onNameValueChange: (String) -> Unit,
     onDescriptionValueChange: (String) -> Unit,
-    onImageClick: (ImageData) -> Unit
+    onImageClick: (GalleryImage) -> Unit
 ) {
 
     var showAlert by remember { mutableStateOf(false) }
@@ -197,10 +194,10 @@ private fun ImageDetailComponent(
  */
 @Composable
 private fun ImageDetailForm(
-    imageData: ImageData,
+    imageData: GalleryImage,
     onNameValueChange: (String) -> Unit,
     onDescriptionValueChange: (String) -> Unit,
-    onImageClick: (ImageData) -> Unit
+    onImageClick: (GalleryImage) -> Unit
 ) {
     Column(
         modifier = Modifier.fillMaxHeight().fillMaxWidth(.5f),

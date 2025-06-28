@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.model
+package org.akrck02.skyleriearts.ui.model.filter
 
 /**
  * Tag types

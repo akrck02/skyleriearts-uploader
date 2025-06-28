@@ -1,15 +1,13 @@
 package org.akrck02.skyleriearts.core.processor
 
 import androidx.compose.runtime.snapshots.SnapshotStateMap
-import org.akrck02.skyleriearts.core.Paths
-import org.akrck02.skyleriearts.core.command.execute
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.data.constant.Paths
+import org.akrck02.skyleriearts.data.model.Image
+import org.akrck02.skyleriearts.service.FileService
 import java.io.File
 
 object ImageProcessor {
 
-
-    const val COMPRESSOR_BINARY_PATH: String = "./bin/image-compressor"
 
     /**
      * Add an image file to gallery
@@ -18,54 +16,33 @@ object ImageProcessor {
      */
     fun addImageFileToGallery(
         file: File,
-        gallery: SnapshotStateMap<String, ImageData>
+        gallery: SnapshotStateMap<String, Image>
     ) {
 
         // Get the data.
-        val data = gallery[file.name] ?: ImageData(
+        val data = gallery[file.name] ?: Image(
             name = file.name,
             path = Paths.getUploadsPath(file.name),
             minPath = Paths.getThumbnailsPath(file.name)
         )
 
-        data.new = true
+        //data.new = true
 
         // If data does not exist in database, add it
         gallery[data.name] = data
     }
 
     fun deleteFromGallery(
-        imageData: ImageData,
-        gallery: SnapshotStateMap<String, ImageData>
+        imageData: Image,
+        gallery: SnapshotStateMap<String, Image>
     ) {
         // remove the resources
-        FileProcessor.removeFile(imageData.path)
-        FileProcessor.removeFile(imageData.minPath)
+        FileService.remove(imageData.path)
+        FileService.remove(imageData.minPath)
 
         // remove the data
         gallery.remove(imageData.name)
-        FileProcessor.saveGalleryToFile(gallery)
+        FileService.saveGallery(gallery)
     }
 
-
-    /**
-     * Compress images using @akrck02's image-compressor golang script
-     */
-    fun compress(path: String) {
-
-        // Check if the file exists
-        val currentFile = File(path)
-        if (currentFile.exists().not())
-            return
-
-        // Execute the compression command
-        val currentDir = File("./")
-        val newPath = Paths.getThumbnailsAbsolutePath(currentFile.path)
-        try {
-            print(currentDir.execute(COMPRESSOR_BINARY_PATH, path, newPath, "400", ""))
-            println()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
 }

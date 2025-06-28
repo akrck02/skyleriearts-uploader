@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.core.command
+package org.akrck02.skyleriearts.command
 
 import java.io.File
 

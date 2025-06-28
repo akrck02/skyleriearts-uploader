@@ -1,4 +1,4 @@
-package org.akrck02.skyleriearts.navigation
+package org.akrck02.skyleriearts.constant
 
 import androidx.core.bundle.Bundle
 import androidx.navigation.NavType
@@ -6,11 +6,11 @@ import com.eygraber.uri.UriCodec
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import org.akrck02.skyleriearts.model.ImageData
+import org.akrck02.skyleriearts.data.model.Image
 
 @Serializable
 data class NavigationType(
-    val imageData: ImageData
+    val imageData: Image
 )
 
 val AppNavigationType = object : NavType<NavigationType>(

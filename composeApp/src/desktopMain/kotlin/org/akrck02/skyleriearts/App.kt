@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import org.akrck02.skyleriearts.navigation.UploadRoute
+import org.akrck02.skyleriearts.constant.UploadRoute
 import org.akrck02.skyleriearts.ui.component.navigation.NavigationDrawer
 import org.akrck02.skyleriearts.ui.component.route.categoriesRoute
 import org.akrck02.skyleriearts.ui.component.route.imageDetailRoute
