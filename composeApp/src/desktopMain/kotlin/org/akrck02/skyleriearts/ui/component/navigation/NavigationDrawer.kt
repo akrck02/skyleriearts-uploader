@@ -9,10 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Brush
 import androidx.compose.material.icons.outlined.Category
@@ -24,11 +20,15 @@ import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.UploadFile
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.PermanentNavigationDrawer
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -89,14 +89,14 @@ fun NavigationDrawer(
                         )
                         .fillMaxWidth(),
                     fontSize = 25.sp,
-                    style = MaterialTheme.typography.h2,
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.primary
+                    color = MaterialTheme.colorScheme.primary
                 )
 
                 val colors = NavigationDrawerItemDefaults.colors(
                     selectedContainerColor = Color(0xFFCFC6B4),
-                    selectedBadgeColor = MaterialTheme.colors.primary
+                    selectedBadgeColor = MaterialTheme.colorScheme.primary
                 )
 
                 var uploadSelected = false
@@ -207,7 +207,7 @@ private fun navigationDrawerItem(
             Text(
                 text = text,
                 fontSize = 18.sp,
-                style = MaterialTheme.typography.overline,
+                style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(PaddingValues(start = 0.dp)),
                 color = if (selected) Color.White else Color(0xFF9A8E75)
             )

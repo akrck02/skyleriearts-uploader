@@ -10,11 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.onClick
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Collections
 import androidx.compose.material.icons.rounded.Category
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import org.akrck02.skyleriearts.constant.ImagesRoute
 import org.akrck02.skyleriearts.constant.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.header.FilterHeader
 import org.akrck02.skyleriearts.ui.component.header.ListHeader
+import org.akrck02.skyleriearts.ui.component.tag.InfoIconTag
 import org.akrck02.skyleriearts.ui.model.filter.GalleryFilter
 import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
@@ -60,7 +62,7 @@ fun ProjectsView(appViewModel: AppViewModel, projectsViewModel: ProjectsViewMode
             }
 
             items(projects) { project ->
-                ProjectRow(project) {
+                ProjectRow(project, projectsViewModel) {
                     ImagesRoute.filter = GalleryFilter.Project
                     ImagesRoute.filterObjectId = project
                     appViewModel.navigate(ImagesRoute)
@@ -73,7 +75,7 @@ fun ProjectsView(appViewModel: AppViewModel, projectsViewModel: ProjectsViewMode
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ProjectRow(name: String, callback: () -> Unit) {
+private fun ProjectRow(name: String, projectsViewModel: ProjectsViewModel, callback: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(start = 40.dp, end = 40.dp, bottom = 10.dp, top = 10.dp)
@@ -92,18 +94,17 @@ private fun ProjectRow(name: String, callback: () -> Unit) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
-                modifier =
-                    Modifier.padding(start = 30.dp, end = 30.dp)
+                modifier = Modifier.padding(start = 30.dp, end = 30.dp)
             ) {
                 Text(
                     text = name,
                     fontSize = 24.sp,
-                    color = MaterialTheme.colors.primary,
-                    style = MaterialTheme.typography.overline
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
-//                val imageNumber = appViewModel.projectMap[name]?.size ?: 0
-//                Row { InfoIconTag("$imageNumber", Icons.Outlined.Collections) }
+                val imageNumber = projectsViewModel.getImageNumberOfProject(name)
+                Row { InfoIconTag("$imageNumber", Icons.Outlined.Collections) }
             }
         }
     }

@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import org.akrck02.skyleriearts.constant.ImageFullScreenRoute
+import org.akrck02.skyleriearts.constant.ImageDetailRoute
 import org.akrck02.skyleriearts.constant.ImagesRoute
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.header.FilterHeader
@@ -45,15 +45,12 @@ fun ImagesView(appViewModel: AppViewModel, galleryViewModel: GalleryViewModel = 
             gallery = galleryViewModel.images,
             selectionMode = SelectionMode.None,
             onImageClick = {
-                ImageFullScreenRoute.image = it
-                appViewModel.navigate(ImageFullScreenRoute)
+                ImageDetailRoute.image = it
+                appViewModel.navigate(ImageDetailRoute)
             },
             onSelectedImageToggle = {}
         )
-
-
     }
-
 }
 
 

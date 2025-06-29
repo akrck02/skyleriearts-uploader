@@ -2,7 +2,7 @@ package org.akrck02.skyleriearts
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,7 +29,7 @@ fun App(appViewModel: AppViewModel = koinViewModel()) {
     val navController: NavHostController = rememberNavController()
     appViewModel.navHostController = navController
 
-    MaterialTheme(colors = getSystemThemeColors()) {
+    MaterialTheme(colorScheme = getSystemThemeColors()) {
         NavigationDrawer(
             appViewModel = appViewModel,
             onSave = { appViewModel.uploadAndSave() }

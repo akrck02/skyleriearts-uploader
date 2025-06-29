@@ -33,22 +33,25 @@ fun GalleryImage.toImage(): Image = Image(
     this.path,
     this.minPath
 ).apply {
-    description = this.description
-    categories = this.categories
-    projects = this.categories
+    this.description = description
+    this.categories = categories
+    this.projects = projects
 }
 
 /**
  * Convert an image to a gallery image
  */
-fun Image.toGalleryImage(): GalleryImage = GalleryImage(
-    this.name,
-    this.path,
-    this.minPath
-).apply {
-    description = this.description
-    categories = this.categories
-    projects = this.categories
+fun Image.toGalleryImage(): GalleryImage {
+    val image = GalleryImage(
+        this.name,
+        this.path,
+        this.minPath
+    )
+
+    image.description = this.description
+    image.categories = this.categories
+    image.projects = this.projects
+    return image
 }
 
 

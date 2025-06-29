@@ -10,12 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -100,7 +100,7 @@ fun DragComposable(
                 target = dragAndDropTarget
             )
             .pointerHoverIcon(PointerIcon.Hand),
-        color = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity)
     ) {
         Column(
             modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
@@ -131,12 +131,12 @@ private fun TextIconPrimary(text: String, icon: ImageVector) {
             imageVector = icon,
             contentDescription = text,
             modifier = Modifier.size(70.dp).padding(10.dp),
-            tint = MaterialTheme.colors.primary
+            tint = MaterialTheme.colorScheme.primary
         )
 
         Text(
             text = text,
-            color = MaterialTheme.colors.primary
+            color = MaterialTheme.colorScheme.primary
         )
     }
 }

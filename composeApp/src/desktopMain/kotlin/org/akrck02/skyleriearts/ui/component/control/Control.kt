@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +23,8 @@ fun ControlsBar(
     ) {
 
         val colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Transparent,
-            contentColor = MaterialTheme.colors.primary
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.primary
         )
 
         buttonList.forEach {

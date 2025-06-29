@@ -34,4 +34,8 @@ class ProjectsViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
         loadProjects()
     }
 
+    fun getImageNumberOfProject(name: String): Int {
+        return galleryDataAccess.getImagesByProject(name).size
+    }
+
 }

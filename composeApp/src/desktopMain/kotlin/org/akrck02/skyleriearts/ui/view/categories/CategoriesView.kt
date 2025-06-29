@@ -10,9 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.onClick
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Collections
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.akrck02.skyleriearts.constant.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.header.ListHeader
+import org.akrck02.skyleriearts.ui.component.tag.InfoIconTag
 import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
@@ -43,7 +47,7 @@ fun CategoriesView(appViewModel: AppViewModel, categoryViewModel: CategoryViewMo
             stickyHeader { ListHeader("You have ${categoryViewModel.categories.size} categories right now.") }
 
             items(categoryViewModel.categories) { category ->
-                CategoryRow(category) {
+                CategoryRow(category, categoryViewModel) {
                     ProjectsRoute.filter = ProjectListFilter.Category
                     ProjectsRoute.filterObjectId = category
                     appViewModel.navigate(ProjectsRoute)
@@ -55,7 +59,7 @@ fun CategoriesView(appViewModel: AppViewModel, categoryViewModel: CategoryViewMo
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun CategoryRow(name: String, callback: () -> Unit) {
+private fun CategoryRow(name: String, categoryViewModel: CategoryViewModel, callback: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(start = 40.dp, end = 40.dp, bottom = 10.dp, top = 10.dp)
@@ -80,15 +84,16 @@ private fun CategoryRow(name: String, callback: () -> Unit) {
                 Text(
                     text = name,
                     fontSize = 24.sp,
-                    color = MaterialTheme.colors.primary,
-                    style = MaterialTheme.typography.overline
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
-                // val imageNumber = appViewModel.run { categoryMap[name]?.sumOf { projectMap[it]?.size ?: 0 } ?: 0 }
+                val projectNumber = categoryViewModel.getProjectNumberOfCategory(name)
+                val imageNumber = categoryViewModel.getImageNumberOfCategory(name)
 
                 Row {
-                    //  InfoIconTag("${appViewModel.categoryMap[name]?.size}", Icons.Outlined.Palette)
-                    // InfoIconTag("$imageNumber", Icons.Outlined.Collections)
+                    InfoIconTag("$projectNumber", Icons.Outlined.Palette)
+                    InfoIconTag("$imageNumber", Icons.Outlined.Collections)
                 }
             }
         }

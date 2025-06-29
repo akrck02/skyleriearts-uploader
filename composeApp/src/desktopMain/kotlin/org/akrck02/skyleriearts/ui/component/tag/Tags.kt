@@ -8,17 +8,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AddCircleOutline
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Tag
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.em
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
-import org.akrck02.skyleriearts.ui.theme.getSystemThemeColors
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
@@ -40,6 +39,7 @@ fun TagContainer(
     icons: ImageVector = Icons.Rounded.Tag,
     contentDescription: String = "",
     emptyText: String = "No elements found.",
+    interactable: Boolean = false,
     onAdd: () -> Unit = {},
     onRemove: (String) -> Unit = {}
 ) {
@@ -54,26 +54,28 @@ fun TagContainer(
             modifier = Modifier.fillMaxWidth()
         ) {
             val colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = MaterialTheme.colors.primary
-            )
-
-            IconButton(
-                colors = colors,
-                data = IconButtonBasicData(
-                    icon = Icons.Rounded.AddCircleOutline,
-                    description = "Add",
-                    onClick = { onAdd() }
-                )
+                containerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.primary
             )
 
             Text(
                 title,
                 fontSize = 1.8.em,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
             )
+
+            if (interactable) {
+                IconButton(
+                    colors = colors,
+                    data = IconButtonBasicData(
+                        icon = Icons.Rounded.Edit,
+                        description = "Add",
+                        onClick = { onAdd() }
+                    )
+                )
+            }
         }
 
         Row(modifier = Modifier.padding(start = 10.dp)) {
@@ -81,7 +83,7 @@ fun TagContainer(
             if (tags.isEmpty()) {
                 Text(
                     text = emptyText,
-                    color = getSystemThemeColors().primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(bottom = 10.dp).fillMaxWidth()
                 )
                 return
@@ -99,8 +101,11 @@ fun TagContainer(
                         shape = MIN_ROUNDED_SHAPE,
                         onClick = { onRemove(it) },
                         colors = ChipDefaults.chipColors(
-                            backgroundColor = MaterialTheme.colors.onSurface.copy(alpha = BackgroundOpacity)
-                        ),
+                            backgroundColor = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity),
+                            contentColor = MaterialTheme.colorScheme.primary,
+                            leadingIconContentColor = MaterialTheme.colorScheme.primary,
+
+                            ),
                         modifier = Modifier.padding(end = 10.dp),
                         leadingIcon = {
                             Icon(imageVector = icons, contentDescription = contentDescription)

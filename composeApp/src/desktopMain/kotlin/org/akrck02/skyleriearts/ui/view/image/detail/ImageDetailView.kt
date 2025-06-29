@@ -9,9 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Category
+import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DeleteOutline
-import androidx.compose.material.icons.rounded.Interests
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.constant.ImageFullScreenRoute
-import org.akrck02.skyleriearts.constant.ProjectsRoute
+import org.akrck02.skyleriearts.constant.ImagesRoute
 import org.akrck02.skyleriearts.ui.component.control.ControlsBar
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
@@ -52,7 +53,6 @@ import java.util.Locale
 fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel) {
 
     println("Details for image ${viewModel.imageData}")
-
     Column(modifier = Modifier.fillMaxSize()) {
         ControlsBar(getButtonControls(appViewModel, viewModel.imageData))
         ImageDetailComponent(
@@ -60,7 +60,6 @@ fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel)
             onProjectAdd = viewModel::addProject,
             onProjectRemove = viewModel::removeProject,
             onCategoryAdd = viewModel::addCategory,
-            onCategoryRemoved = viewModel::removeCategory,
             onNameValueChange = viewModel::setName,
             onDescriptionValueChange = viewModel::setDescription,
             onImageClick = {
@@ -86,13 +85,13 @@ private fun getButtonControls(
 //            ImageProcessor.deleteFromGallery(imageData, gallery)
 
             // navigate to gallery
-            appViewModel.navigate(ProjectsRoute)
+            appViewModel.navigate(ImagesRoute)
         },
     ),
     IconButtonBasicData(
         icon = Icons.Rounded.Close,
         description = "Close",
-        onClick = { appViewModel.navigate(ProjectsRoute) }
+        onClick = { appViewModel.navigate(ImagesRoute) }
     )
 )
 
@@ -106,7 +105,6 @@ private fun ImageDetailComponent(
     onProjectAdd: (String) -> Unit,
     onProjectRemove: (String) -> Unit,
     onCategoryAdd: (String) -> Unit,
-    onCategoryRemoved: (String) -> Unit,
     onNameValueChange: (String) -> Unit,
     onDescriptionValueChange: (String) -> Unit,
     onImageClick: (GalleryImage) -> Unit
@@ -128,13 +126,24 @@ private fun ImageDetailComponent(
         ) {
 
             TagContainer(
+                title = stringResource(Res.string.categories),
+                tags = image.categories,
+                icons = Icons.Outlined.Category,
+                emptyText = stringResource(
+                    Res.string.noThingsHereAddOne,
+                    stringResource(Res.string.categories).lowercase(Locale.getDefault())
+                )
+            )
+
+            TagContainer(
                 title = stringResource(Res.string.projects),
                 tags = image.projects,
-                icons = Icons.Rounded.Interests,
+                icons = Icons.Outlined.Palette,
                 emptyText = stringResource(
                     Res.string.noThingsHereAddOne,
                     stringResource(Res.string.projects).lowercase(Locale.getDefault())
                 ),
+                interactable = true,
                 onAdd = {
                     tagType = TagType.Project
                     showAlert = true
@@ -142,19 +151,6 @@ private fun ImageDetailComponent(
                 onRemove = onProjectRemove
             )
 
-            TagContainer(
-                title = stringResource(Res.string.categories),
-                tags = image.categories,
-                emptyText = stringResource(
-                    Res.string.noThingsHereAddOne,
-                    stringResource(Res.string.categories).lowercase(Locale.getDefault())
-                ),
-                onAdd = {
-                    tagType = TagType.Category
-                    showAlert = true
-                },
-                onRemove = onCategoryRemoved
-            )
 
         }
     }
@@ -168,7 +164,7 @@ private fun ImageDetailComponent(
         }
 
         MaterialAlertInputDialog(
-            title = stringResource(Res.string.addTo, tagLocalName, image.name),
+            title = stringResource(Res.string.addTo, tagLocalName, "\"${image.name}\""),
             description = stringResource(Res.string.willOrderYourImagesWebsite, tagLocalName),
             acceptText = stringResource(Res.string.addNew, tagLocalName),
             cancelText = stringResource(Res.string.notNow),

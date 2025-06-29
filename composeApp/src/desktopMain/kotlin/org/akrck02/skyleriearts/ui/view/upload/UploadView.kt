@@ -7,9 +7,10 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
-import org.akrck02.skyleriearts.constant.ProjectsRoute
 import org.akrck02.skyleriearts.ui.component.drag.DragComposable
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -39,23 +39,28 @@ fun UploadView(appViewModel: AppViewModel) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun UploadSection(appViewModel: AppViewModel) {
 
     var showLoader by remember { mutableStateOf(false) }
+    var showImageAddView by remember { mutableStateOf(false) }
 
     if (showLoader) {
         AlertDialog(
+            onDismissRequest = { showLoader = false },
             title = { Text("Loading") },
             text = { Text("Images are being minified.") },
-            buttons = {
-            },
-            onDismissRequest = { showLoader = false },
-            modifier = Modifier.padding(10.dp),
-            backgroundColor = MaterialTheme.colors.background
+            confirmButton = {},
+            modifier = Modifier.padding(10.dp)
         )
 
-        appViewModel.navigate(ProjectsRoute)
+        showImageAddView = true
+    }
+
+    if (showImageAddView) {
+        ImageAddView()
+        return
     }
 
     Column(
@@ -65,7 +70,7 @@ private fun UploadSection(appViewModel: AppViewModel) {
     ) {
         Text(
             text = stringResource(Res.string.hi),
-            color = MaterialTheme.colors.primary,
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 2.em,
             modifier = Modifier.padding(20.dp)
         )

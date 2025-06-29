@@ -1,18 +1,18 @@
 package org.akrck02.skyleriearts.ui.component.modal
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
 import org.akrck02.skyleriearts.ui.component.input.MaterialTextField
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
@@ -31,53 +31,53 @@ fun MaterialAlertInputDialog(
 ) {
     AlertDialog(
         title = { Text(title) },
-        text = { Text(description) },
-        buttons = {
-
-            Column(
-                modifier = Modifier.padding(10.dp).fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                MaterialTextField(
-                    value = textFieldValue,
-                    onValueChange = onTextFieldValueChange,
-                    label = textFieldLabel,
-                    modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)
+        text = {
+            Column {
+                Text(
+                    text = description,
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
-            }
-
-            Row(
-                modifier = Modifier.padding(10.dp).fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = {
-                        onClickAccept()
-                        onClose()
-                    },
-                    modifier = Modifier.padding(end = 10.dp),
-                    shape = DEFAULT_ROUNDED_SHAPE
+                Column(
+                    modifier = Modifier.padding(0.dp).fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(acceptText)
-                }
 
-                Button(
-                    onClick = onClose,
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.surface),
-                    elevation = ButtonDefaults.elevation(
-                        defaultElevation = 0.dp,
-                        hoveredElevation = 2.dp
-                    ),
-                    shape = DEFAULT_ROUNDED_SHAPE
-                ) {
-                    Text(cancelText)
+                    MaterialTextField(
+                        value = textFieldValue,
+                        onValueChange = onTextFieldValueChange,
+                        label = textFieldLabel,
+                        modifier = Modifier.fillMaxWidth().padding(start = 10.dp, end = 10.dp)
+                    )
                 }
             }
-
-
         },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onClickAccept()
+                    onClose()
+                },
+                modifier = Modifier.padding(end = 10.dp).pointerHoverIcon(PointerIcon.Hand),
+                shape = DEFAULT_ROUNDED_SHAPE
+            ) { Text(acceptText) }
+        },
+        dismissButton = {
+            Button(
+                onClick = onClose,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 0.dp,
+                    hoveredElevation = 2.dp
+                ),
+                shape = DEFAULT_ROUNDED_SHAPE
+            ) { Text(cancelText) }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         onDismissRequest = onClose,
-        modifier = Modifier.padding(10.dp),
-        backgroundColor = MaterialTheme.colors.background
+        modifier = Modifier.padding(10.dp)
     )
 }
+
+
+

@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,15 +23,15 @@ fun InfoIconTag(name: String, icon: ImageVector) {
         Text(
             text = name,
             fontSize = 24.sp,
-            color = MaterialTheme.colors.primary,
-            style = MaterialTheme.typography.overline,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(end = 10.dp)
         )
 
         Icon(
             imageVector = icon,
             contentDescription = name,
-            tint = MaterialTheme.colors.primary,
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(28.dp)
         )
     }

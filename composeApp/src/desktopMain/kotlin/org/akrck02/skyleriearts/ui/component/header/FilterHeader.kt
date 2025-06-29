@@ -5,14 +5,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.FilterAlt
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,7 +39,7 @@ fun FilterHeader(filters: List<Pair<String, ImageVector>>, onClick: () -> Unit) 
             Icon(
                 imageVector = Icons.Rounded.FilterAlt,
                 contentDescription = "filter",
-                tint = MaterialTheme.colors.primary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(28.dp).padding(end = 10.dp)
             )
 
@@ -51,7 +50,7 @@ fun FilterHeader(filters: List<Pair<String, ImageVector>>, onClick: () -> Unit) 
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+
 @Composable
 private fun ClearFilterButton(onClick: () -> Unit) {
     Row(
@@ -71,16 +70,16 @@ private fun ClearFilterButton(onClick: () -> Unit) {
 
                 Text(
                     text = "Clean filters",
-                    color = MaterialTheme.colors.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 16.sp,
-                    style = MaterialTheme.typography.overline,
+                    style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(end = 10.dp)
                 )
 
                 Icon(
                     imageVector = Icons.Rounded.Clear,
                     contentDescription = "clean filters",
-                    tint = MaterialTheme.colors.primary,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -102,14 +101,14 @@ private fun FilterChip(name: String, icon: ImageVector) {
             Icon(
                 imageVector = icon,
                 contentDescription = name,
-                tint = MaterialTheme.colors.primary,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(28.dp).padding(end = 10.dp)
             )
             Text(
                 text = name,
-                color = MaterialTheme.colors.primary,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 16.sp,
-                style = MaterialTheme.typography.overline
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
