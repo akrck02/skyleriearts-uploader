@@ -7,7 +7,6 @@ import com.eygraber.uri.UriCodec
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.akrck02.skyleriearts.data.constant.Paths
-import org.akrck02.skyleriearts.data.constant.validExtensions
 import org.akrck02.skyleriearts.data.model.Image
 import org.akrck02.skyleriearts.exception.ErrorCode
 import org.akrck02.skyleriearts.exception.SoftwareException
@@ -20,15 +19,7 @@ object FileService : IFileService {
 
     override fun add(path: String): File {
 
-        // If it is directory return
         val file = File(path)
-        if (file.isDirectory) throw SoftwareException(code = ErrorCode.FilePathIsDirectory, message = "Cannot delete: File $path is a directory.")
-
-        // If extension is invalid return
-        if (validExtensions.contains(file.extension).not()) throw SoftwareException(
-            code = ErrorCode.InvalidFileExtension,
-            message = "Cannot delete: File $path has an invalid extension (${file.extension})."
-        )
 
         // if the file exists return the file
         var newFile = File(Paths.getUploadsAbsolutePath(file.name))

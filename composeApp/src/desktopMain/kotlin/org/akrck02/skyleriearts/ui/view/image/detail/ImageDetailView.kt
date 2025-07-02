@@ -150,8 +150,6 @@ private fun ImageDetailComponent(
                 },
                 onRemove = onProjectRemove
             )
-
-
         }
     }
 

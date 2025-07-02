@@ -39,7 +39,7 @@ import java.net.URLDecoder
 /***
  * Composable for File Drag and Drop
  * @param text The text to show
- * @param onDrag Function to execute on drag
+ * @param onDrop Function to execute on drag
  * @param onFileAdded Function to execute on file added
  */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
@@ -47,8 +47,7 @@ import java.net.URLDecoder
 fun DragComposable(
     text: String,
     onStarted: () -> Unit = {},
-    onDrag: (String) -> File?,
-    onFileAdded: (File) -> Unit,
+    onDrop: (String) -> File?,
     onFinish: () -> Unit = {}
 ) {
 
@@ -68,6 +67,7 @@ fun DragComposable(
 
             override fun onDrop(event: DragAndDropEvent): Boolean {
 
+
                 // Get transferable data and handle it
                 val fileList = event.dragData() as DragData.FilesList
                 fileList.readFiles().forEach { url ->
@@ -77,10 +77,7 @@ fun DragComposable(
                     }
 
                     val newUrl = decode(url.removePrefix("file:"))
-                    val result = onDrag(newUrl)
-                    result?.let {
-                        onFileAdded(result)
-                    }
+                    onDrop(newUrl)
                 }
 
                 onFinish()

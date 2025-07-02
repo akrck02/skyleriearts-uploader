@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import org.akrck02.skyleriearts.service.ImageManipulationService
 import org.akrck02.skyleriearts.ui.component.drag.DragComposable
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.jetbrains.compose.resources.stringResource
 import skylerieartsuploader.composeapp.generated.resources.Res
 import skylerieartsuploader.composeapp.generated.resources.dragMessage
 import skylerieartsuploader.composeapp.generated.resources.hi
+import java.io.File
 
 @Composable
 fun UploadView(appViewModel: AppViewModel) {
@@ -43,23 +44,12 @@ fun UploadView(appViewModel: AppViewModel) {
 @Composable
 private fun UploadSection(appViewModel: AppViewModel) {
 
-    var showLoader by remember { mutableStateOf(false) }
     var showImageAddView by remember { mutableStateOf(false) }
-
-    if (showLoader) {
-        AlertDialog(
-            onDismissRequest = { showLoader = false },
-            title = { Text("Loading") },
-            text = { Text("Images are being minified.") },
-            confirmButton = {},
-            modifier = Modifier.padding(10.dp)
-        )
-
-        showImageAddView = true
-    }
-
+    var addedImageList = remember { mutableListOf<File>() }
+    
     if (showImageAddView) {
-        ImageAddView()
+        ImageAddView(addedImageList)
+        //appViewModel.addFileToResources(path)
         return
     }
 
@@ -77,9 +67,14 @@ private fun UploadSection(appViewModel: AppViewModel) {
 
         DragComposable(
             text = stringResource(Res.string.dragMessage),
-            onStarted = { showLoader = true },
-            onDrag = { path -> appViewModel.addFileToResources(path) },
-            onFileAdded = { file -> appViewModel.addImageFileToGallery(file) },
+            onStarted = { if (addedImageList.isEmpty().not()) showImageAddView = true },
+            onDrop = { path ->
+                try {
+                    ImageManipulationService.getImageFile(path).also { addedImageList.add(it) }
+                } catch (e: Exception) {
+                    null
+                }
+            },
             onFinish = {}
         )
     }

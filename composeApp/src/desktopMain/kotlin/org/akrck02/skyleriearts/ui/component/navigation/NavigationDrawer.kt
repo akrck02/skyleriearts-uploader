@@ -174,6 +174,7 @@ fun NavigationDrawer(
                             description = "",
                             onClick = onSave
                         ),
+                        contentPadding = PaddingValues(13.dp),
                         modifier = Modifier.size(50.dp),
                         iconModifier = Modifier.size(50.dp)
                     )

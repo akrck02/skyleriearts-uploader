@@ -8,6 +8,10 @@ import java.io.File
 
 interface IFileService {
 
+    fun checkImages() {
+
+    }
+
     /**
      * Add the file to the queue if needed
      * if the file already exists, returns

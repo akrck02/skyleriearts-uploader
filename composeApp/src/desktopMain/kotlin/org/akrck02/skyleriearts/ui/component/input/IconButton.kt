@@ -1,5 +1,7 @@
 package org.akrck02.skyleriearts.ui.component.input
 
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -38,7 +40,8 @@ fun IconButton(
     colors: ButtonColors,
     data: IconButtonData,
     modifier: Modifier = Modifier.width(50.dp),
-    iconModifier: Modifier = Modifier
+    iconModifier: Modifier = Modifier.width(50.dp),
+    contentPadding: PaddingValues = PaddingValues(10.dp)
 ) {
     Button(
         onClick = data.onClick,
@@ -46,8 +49,7 @@ fun IconButton(
         shape = TOTAL_ROUNDED_SHAPE,
         border = null,
         elevation = null,
-        modifier = modifier.pointerHoverIcon(PointerIcon.Hand),
-    ) {
-        Icon(data.icon, data.description, modifier = iconModifier)
-    }
+        contentPadding = contentPadding,
+        modifier = modifier.size(50.dp).pointerHoverIcon(PointerIcon.Hand),
+    ) { Icon(data.icon, data.description, modifier = iconModifier) }
 }
