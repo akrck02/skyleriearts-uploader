@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import org.akrck02.skyleriearts.data.GalleryDataAccess
+import org.akrck02.skyleriearts.data.PortfolioDataAccess
 
-class ImageAddViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() {
+class ImageAddViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewModel() {
 
     // region variables
     private var _projects = mutableListOf<String>()
@@ -22,7 +22,7 @@ class ImageAddViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
     }
 
     fun loadProjects() {
-        projects = galleryDataAccess.getProjects().sorted().toMutableList()
+        projects = portfolioDataAccess.getProjects().sorted().toMutableList()
         selectedProject = projects.firstOrNull() ?: ""
     }
 

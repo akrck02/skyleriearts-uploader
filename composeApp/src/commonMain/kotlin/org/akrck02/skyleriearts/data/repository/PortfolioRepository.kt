@@ -2,7 +2,7 @@ package org.akrck02.skyleriearts.data.repository
 
 import org.akrck02.skyleriearts.data.model.Image
 
-interface GalleryRepository {
+interface PortfolioRepository {
 
     // region categories
     fun getCategories(): MutableSet<String>

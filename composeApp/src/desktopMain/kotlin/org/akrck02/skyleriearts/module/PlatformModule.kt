@@ -1,6 +1,6 @@
 package org.akrck02.skyleriearts.module
 
-import org.akrck02.skyleriearts.data.GalleryDataAccess
+import org.akrck02.skyleriearts.data.PortfolioDataAccess
 import org.akrck02.skyleriearts.viewmodel.AppViewModel
 import org.akrck02.skyleriearts.viewmodel.CategoryViewModel
 import org.akrck02.skyleriearts.viewmodel.GalleryViewModel
@@ -34,5 +34,5 @@ val viewModelModule = module {
 
 // add data access here
 val dataAccessModule = module {
-    singleOf(::GalleryDataAccess)
+    singleOf(::PortfolioDataAccess)
 }

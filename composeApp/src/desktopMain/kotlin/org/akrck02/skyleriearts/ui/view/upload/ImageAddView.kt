@@ -12,10 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Save
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -23,8 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,13 +27,13 @@ import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.DropdownMenu
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
+import org.akrck02.skyleriearts.ui.component.input.IconButtonLarge
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.viewmodel.ImageAddViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import java.io.File
 import kotlin.math.max
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel = koinViewModel()) {
     Column(
@@ -81,16 +76,24 @@ fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel
             modifier = Modifier.padding(top = 15.dp, bottom = 15.dp).width(450.dp)
         )
 
-        NewProjectButton()
-        IconButton(
+        IconButtonLarge(
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
             data = IconButtonBasicData(
-                icon = Icons.Rounded.Save,
-                description = "save",
+                icon = Icons.Rounded.Add,
+                description = "Create a new one",
                 onClick = {}
-            ),
+            )
+        )
+
+        IconButton(
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.background
+            ),
+            data = IconButtonBasicData(
+                icon = Icons.Rounded.Save,
+                description = "Save",
+                onClick = {}
             ),
             modifier = Modifier.padding(top = 50.dp)
         )
@@ -98,36 +101,6 @@ fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel
 }
 
 @Composable
-private fun NewProjectButton() {
-    Button(
-        onClick = {},
-        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
-        shape = ButtonDefaults.elevatedShape,
-        modifier = Modifier.height(60.dp).pointerHoverIcon(PointerIcon.Hand)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Create a new one",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(end = 10.dp)
-            )
-
-            Icon(
-                imageVector = Icons.Rounded.Add,
-                contentDescription = "Add project",
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ProjectSelector(viewModel: ImageAddViewModel) {
     var value = remember { viewModel.selectedProject }
     DropdownMenu(

@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import org.akrck02.skyleriearts.constant.ProjectsRoute
-import org.akrck02.skyleriearts.data.GalleryDataAccess
+import org.akrck02.skyleriearts.data.PortfolioDataAccess
 import org.akrck02.skyleriearts.ui.model.filter.ProjectListFilter
 
-class ProjectsViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() {
+class ProjectsViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewModel() {
 
     // region variables
     private var _projects = mutableListOf<String>()
@@ -24,9 +24,9 @@ class ProjectsViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
 
     fun loadProjects() {
         projects = when (ProjectsRoute.filter) {
-            ProjectListFilter.Name -> galleryDataAccess.searchProjectsByName(ProjectsRoute.filterObjectId ?: "")
-            ProjectListFilter.Category -> galleryDataAccess.getProjectsByCategory(ProjectsRoute.filterObjectId ?: "")
-            else -> galleryDataAccess.getProjects()
+            ProjectListFilter.Name -> portfolioDataAccess.searchProjectsByName(ProjectsRoute.filterObjectId ?: "")
+            ProjectListFilter.Category -> portfolioDataAccess.getProjectsByCategory(ProjectsRoute.filterObjectId ?: "")
+            else -> portfolioDataAccess.getProjects()
         }.toMutableList()
     }
 
@@ -35,7 +35,7 @@ class ProjectsViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
     }
 
     fun getImageNumberOfProject(name: String): Int {
-        return galleryDataAccess.getImagesByProject(name).size
+        return portfolioDataAccess.getImagesByProject(name).size
     }
 
 }
