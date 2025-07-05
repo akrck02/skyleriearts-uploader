@@ -2,7 +2,7 @@
 <resources>
     <string name="title">Skyleriearts - Portfolio editor.</string>
     <string name="hi">Hi Skylerie!</string>
-    <string name="dragMessage">Drag your images here</string>
+    <string name="dragMessage">Drag your images or click here</string>
     <string name="update">Update</string>
     <string name="headerTitle">Skylerie portfolio</string>
     <string name="upload">Upload</string>
