@@ -1,7 +1,9 @@
 package org.akrck02.skyleriearts.ui.component.drag
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropTarget
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -93,6 +95,8 @@ fun DragComposable(
         }
     }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    var pickingFile by remember { mutableStateOf(false) }
     Surface(
         shape = DEFAULT_ROUNDED_SHAPE,
         modifier = Modifier.width(500.dp)
@@ -102,28 +106,34 @@ fun DragComposable(
                 shouldStartDragAndDrop = { true },
                 target = dragAndDropTarget
             )
-            .pointerHoverIcon(PointerIcon.Hand),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity),
-        onClick = {
+            .pointerHoverIcon(PointerIcon.Hand)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = {
 
-            corroutineScope.launch {
+                    corroutineScope.launch {
+                        if (pickingFile) return@launch
+                        
+                        pickingFile = true
+                        val files = FileKit.pickFile(
+                            type = PickerType.Image,
+                            mode = PickerMode.Multiple(),
+                            title = "Pick images to upload",
+                        )
 
-                // FileKit Core
-                val files = FileKit.pickFile(
-                    type = PickerType.Image,
-                    mode = PickerMode.Multiple(),
-                    title = "Pick an image",
-                )
-
-                if (files.isNullOrEmpty().not()) {
-                    onStarted()
-                    files.forEach { file ->
-                        onDrop(file.path ?: "")
+                        if (files.isNullOrEmpty().not()) {
+                            onStarted()
+                            files.forEach { file ->
+                                onDrop(file.path ?: "")
+                            }
+                            onFinish()
+                        }
+                        pickingFile = false
                     }
-                    onFinish()
                 }
-            }
-        }
+            ),
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity),
     ) {
         Column(
             modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
