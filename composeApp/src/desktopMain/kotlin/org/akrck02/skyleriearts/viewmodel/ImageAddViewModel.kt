@@ -14,6 +14,7 @@ class ImageAddViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
 
     // region state
     var projects by mutableStateOf(_projects)
+    var selectedProject by mutableStateOf("")
     // endregion state
 
     init {
@@ -22,6 +23,7 @@ class ImageAddViewModel(val galleryDataAccess: GalleryDataAccess) : ViewModel() 
 
     fun loadProjects() {
         projects = galleryDataAccess.getProjects().sorted().toMutableList()
+        selectedProject = projects.firstOrNull() ?: ""
     }
 
 }

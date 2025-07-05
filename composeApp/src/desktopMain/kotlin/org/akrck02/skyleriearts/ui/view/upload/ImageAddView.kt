@@ -9,10 +9,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ExpandLess
+import androidx.compose.material.icons.rounded.ExpandMore
+import androidx.compose.material.icons.rounded.Save
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Surface
@@ -31,6 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
+import org.akrck02.skyleriearts.ui.component.input.IconButton
+import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.getTextFieldThemeColors
 import org.akrck02.skyleriearts.viewmodel.ImageAddViewModel
@@ -57,86 +67,168 @@ fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel
             modifier = Modifier.padding(bottom = 50.dp).width(450.dp)
         )
 
+        AddedGalleryPreview(addedImageList)
+
+        Text(
+            text = "Select a project.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 50.sp,
+            modifier = Modifier.padding(top = 50.dp, bottom = 15.dp).width(450.dp)
+        )
+
+        ProjectSelector(viewModel)
+
+        Text(
+            text = "or",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontSize = 22.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 50.sp,
+            modifier = Modifier.padding(top = 15.dp, bottom = 15.dp).width(450.dp)
+        )
+
+        NewProjectButton()
+        IconButton(
+            data = IconButtonBasicData(
+                icon = Icons.Rounded.Save,
+                description = "save",
+                onClick = {}
+            ),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.background
+            ),
+            modifier = Modifier.padding(top = 50.dp)
+        )
+    }
+}
+
+@Composable
+private fun NewProjectButton() {
+    Button(
+        onClick = {},
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
+        shape = ButtonDefaults.elevatedShape,
+        modifier = Modifier.height(60.dp).pointerHoverIcon(PointerIcon.Hand)
+    ) {
         Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            for (i in 0..3) {
+            Text(
+                text = "Create a new one",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 16.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(end = 10.dp)
+            )
 
-                Row {
-                    Surface(
-                        modifier = Modifier.height(70.dp).width(80.dp).defaultMinSize(60.dp, 60.dp).padding(start = 5.dp, end = 5.dp),
-                        shape = DEFAULT_ROUNDED_SHAPE
-                    ) {
-                        if (addedImageList.size > i) {
-                            GalleryImage(
-                                data = org.akrck02.skyleriearts.ui.model.GalleryImage(
-                                    name = "",
-                                    path = addedImageList[i].absolutePath,
-                                    minPath = addedImageList[i].absolutePath
-                                ),
-                                modifier = Modifier.fillMaxSize().padding(0.dp),
-                                onClick = { }
-                            )
-                        }
-                    }
-                }
+            Icon(
+                imageVector = Icons.Rounded.Add,
+                contentDescription = "Add project",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
 
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun ProjectSelector(viewModel: ImageAddViewModel) {
+
+    var value by mutableStateOf(viewModel.selectedProject)
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = it },
+        modifier = Modifier.padding(top = 0.dp).pointerHoverIcon(PointerIcon.Hand),
+    ) {
+        TextField(
+            value = value,
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).width(250.dp).pointerHoverIcon(PointerIcon.Hand),
+            readOnly = true,
+            shape = DEFAULT_ROUNDED_SHAPE,
+            onValueChange = { value = it },
+            colors = getTextFieldThemeColors(),
+            trailingIcon = {
+                Icon(
+                    imageVector = if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = "expand more"
+                )
             }
+        )
 
-            val extra = max(addedImageList.size - 4, 0)
-            if (0 != extra) {
-                Text(
-                    text = "+$extra",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 36.sp,
-                    modifier = Modifier.padding(start = 20.dp)
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+        ) {
+            viewModel.projects.forEach { option ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = option,
+                            style = MaterialTheme.typography.bodyLarge,
+                            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
+                        )
+                    },
+                    onClick = {
+                        viewModel.selectedProject = option
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
                 )
             }
         }
+    }
+}
 
-        println("AAAAAAAAAAA")
+@Composable
+private fun AddedGalleryPreview(addedImageList: MutableList<File>) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        for (i in 0..3) {
 
-        var textFieldState by mutableStateOf(viewModel.projects.first())
-        var expanded by remember { mutableStateOf(false) }
-
-        println("BBBBBBBBBBBB")
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-            modifier = Modifier.padding(top = 50.dp).pointerHoverIcon(PointerIcon.Hand),
-        ) {
-            TextField(
-                value = textFieldState,
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).width(200.dp).pointerHoverIcon(PointerIcon.Hand),
-                readOnly = true,
-                shape = DEFAULT_ROUNDED_SHAPE,
-                onValueChange = { textFieldState = it },
-                colors = getTextFieldThemeColors()
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-            ) {
-
-                viewModel.projects.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
-                        onClick = {
-                            println(option)
-                            textFieldState = option
-                            expanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                        modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
-                    )
+            Row {
+                Surface(
+                    modifier = Modifier.height(70.dp).width(80.dp).defaultMinSize(60.dp, 60.dp).padding(start = 5.dp, end = 5.dp),
+                    shape = DEFAULT_ROUNDED_SHAPE
+                ) {
+                    if (addedImageList.size > i) {
+                        GalleryImage(
+                            data = org.akrck02.skyleriearts.ui.model.GalleryImage(
+                                name = "",
+                                path = addedImageList[i].absolutePath,
+                                minPath = addedImageList[i].absolutePath
+                            ),
+                            modifier = Modifier.fillMaxSize().padding(0.dp),
+                            onClick = { }
+                        )
+                    }
                 }
             }
 
         }
 
+        val extra = max(addedImageList.size - 4, 0)
+        if (0 != extra) {
+            Text(
+                text = "+$extra",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 36.sp,
+                modifier = Modifier.padding(start = 20.dp)
+            )
+        }
     }
 }
