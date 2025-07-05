@@ -7,49 +7,44 @@ object Paths {
 
     val dotenv: Dotenv = dotenv()
     val basePath = dotenv["WEB_PATH"] ?: "."
+    val uploadsPath = "$basePath/${dotenv["UPLOADS_PATH"]}"
     val galleryFilePath = "$basePath/resources/data/images.json"
 
     /**
      * Get resources path
      */
     fun getUploadsPath(path: String): String {
-        return StringBuilder("resources/images/upload").append("/").append(path).toString()
+        return "resources/images/upload/$path"
     }
-
 
     /**
      * Get resources path
      */
     fun getUploadsAbsolutePath(path: String): String {
-        return StringBuilder("$basePath/resources/images/upload").append("/").append(path).toString()
+        return "$uploadsPath/$path"
     }
 
     /**
      * Get thumbnail path
      */
     fun getThumbnailsPath(path: String): String {
-
-        var newPath = path
-        if (newPath.contains("/")) {
-            newPath = path.substring(path.lastIndexOf("/"))
-        }
-
-        newPath = StringBuilder("resources/images/thumbnails").append("/").append(newPath).toString()
-        return newPath.replaceFirst(".", "-min.")
+        return "resources/images/uploads/${path.removeLastSlash()}".replaceFirst(".", "-min.")
     }
+
 
     /**
      * Get thumbnail path
      */
     fun getThumbnailsAbsolutePath(path: String): String {
-
-        var newPath = path
-        if (newPath.contains("/")) {
-            newPath = path.substring(path.lastIndexOf("/"))
-        }
-
-        newPath = StringBuilder("$basePath/resources/images/thumbnails").append("/").append(newPath).toString()
-        return newPath.replaceFirst(".", "-min.")
+        return "$basePath/resources/images/upload/${path.removeLastSlash()}".replaceFirst(".", "-min.")
     }
+
+    /**
+     * Remove last slash from path
+     */
+    fun String.removeLastSlash(): String {
+        return if (this.contains("/")) this.substring(this.lastIndexOf("/")) else this
+    }
+
 
 }

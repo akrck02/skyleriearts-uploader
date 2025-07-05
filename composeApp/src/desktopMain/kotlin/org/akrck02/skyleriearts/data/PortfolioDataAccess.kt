@@ -34,21 +34,40 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get all the current categories
      */
-    override fun getCategories(): MutableSet<String> {
+    override fun getCategories(): Set<String> {
         return portfolio.categories.keys
     }
 
     /**
      * Search categories by name
      */
-    override fun searchCategoriesByName(name: String): MutableSet<String> {
+    override fun searchCategoriesByName(name: String): Set<String> {
         return portfolio.categories.keys
+    }
+
+    /**
+     * Get categories of a project
+     */
+    override fun getCategoriesOfProject(name: String): Set<String> {
+        return portfolio.categories.filter { it.value.contains(name).not() }.map { it.key }.toSet()
+    }
+
+    /**
+     * Get categories of image
+     */
+    override fun getCategoriesOfImage(name: String): Set<String> {
+        val projects = mutableSetOf<String>()
+        portfolio.images[name]?.also {
+            it.projects.forEach { projects.addAll(getCategoriesOfProject(it)) }
+        }
+
+        return projects
     }
 
     /**
      * Get projects by name
      */
-    override fun getProjects(): MutableSet<String> {
+    override fun getProjects(): Set<String> {
         return mutableSetOf<String>().also { projects ->
             portfolio.categories.forEach { projects.addAll(it.value) }
         }
@@ -57,14 +76,14 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get projects by category
      */
-    override fun getProjectsByCategory(category: String): MutableSet<String> {
+    override fun getProjectsByCategory(category: String): Set<String> {
         return portfolio.categories[category] ?: mutableSetOf()
     }
 
     /**
      * Search projects by name
      */
-    override fun searchProjectsByName(name: String): MutableSet<String> {
+    override fun searchProjectsByName(name: String): Set<String> {
         return getProjects().filter { name.damerauLevenshteinDistance(it) < maxNameDistance }.toMutableSet()
     }
 
@@ -76,12 +95,12 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get all the available images
      */
-    override fun getImages(): MutableSet<Image> = portfolio.images.values.toMutableSet()
+    override fun getImages(): Set<Image> = portfolio.images.values.toMutableSet()
 
     /**
      * Get all the images of a category
      */
-    override fun getImagesByCategory(category: String): MutableSet<Image> {
+    override fun getImagesByCategory(category: String): Set<Image> {
         val projectsOfCategory = portfolio.categories[category] ?: setOf()
         return portfolio.images.map { it.value }
             .filter { it.projects.any { project -> projectsOfCategory.contains(project) } }
@@ -91,7 +110,7 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get all the images by project
      */
-    override fun getImagesByProject(project: String): MutableSet<Image> = portfolio.images
+    override fun getImagesByProject(project: String): Set<Image> = portfolio.images
         .map { it.value }
         .filter { it.projects.contains(project) }
         .toMutableSet()
@@ -99,7 +118,7 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Search images by name
      */
-    override fun searchImagesByName(name: String): MutableSet<Image> {
+    override fun searchImagesByName(name: String): Set<Image> {
         return portfolio.images
             .filter { name.damerauLevenshteinDistance(it.key) < maxNameDistance }
             .map { it.value }

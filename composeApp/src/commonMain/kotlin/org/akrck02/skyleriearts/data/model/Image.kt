@@ -14,6 +14,7 @@ data class Image(
     var path: String,
     var minPath: String,
 ) {
+
     var description: String = ""
     var categories: MutableList<String> = mutableStateListOf()
     var projects: MutableList<String> = mutableStateListOf()

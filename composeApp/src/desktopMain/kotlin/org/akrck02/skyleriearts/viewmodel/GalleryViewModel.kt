@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import org.akrck02.skyleriearts.constant.ImagesRoute
 import org.akrck02.skyleriearts.data.PortfolioDataAccess
-import org.akrck02.skyleriearts.data.constant.Paths
 import org.akrck02.skyleriearts.ui.model.GalleryImage
 import org.akrck02.skyleriearts.ui.model.filter.GalleryFilter
 import org.akrck02.skyleriearts.ui.model.toGalleryImage
@@ -30,12 +29,7 @@ class GalleryViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewModel
             GalleryFilter.Category -> portfolioDataAccess.getImagesByCategory(ImagesRoute.filterObjectId ?: "")
             GalleryFilter.Project -> portfolioDataAccess.getImagesByProject(ImagesRoute.filterObjectId ?: "")
             else -> portfolioDataAccess.getImages()
-        }.map {
-            it.toGalleryImage().apply {
-                path = "${Paths.basePath}/$path"
-                minPath = "${Paths.basePath}/$minPath"
-            }
-        }.toMutableList()
+        }.map { it.toGalleryImage() }.toMutableList()
     }
 
 

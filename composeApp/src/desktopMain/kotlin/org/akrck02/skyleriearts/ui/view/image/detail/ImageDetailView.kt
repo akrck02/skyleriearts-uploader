@@ -56,7 +56,7 @@ fun ImageDetailView(appViewModel: AppViewModel, viewModel: ImageDetailViewModel)
     Column(modifier = Modifier.fillMaxSize()) {
         ControlsBar(getButtonControls(appViewModel, viewModel.imageData))
         ImageDetailComponent(
-            image = viewModel.imageData,
+            image = viewModel.imageData.apply { categories = viewModel.getCategories().toMutableList() },
             onProjectAdd = viewModel::addProject,
             onProjectRemove = viewModel::removeProject,
             onCategoryAdd = viewModel::addCategory,

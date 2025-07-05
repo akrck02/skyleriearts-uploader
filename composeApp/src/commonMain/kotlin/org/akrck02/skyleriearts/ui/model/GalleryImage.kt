@@ -3,6 +3,7 @@ package org.akrck02.skyleriearts.ui.model
 import androidx.compose.runtime.mutableStateListOf
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import org.akrck02.skyleriearts.data.constant.Paths
 import org.akrck02.skyleriearts.data.model.Image
 
 /**
@@ -44,8 +45,8 @@ fun GalleryImage.toImage(): Image = Image(
 fun Image.toGalleryImage(): GalleryImage {
     val image = GalleryImage(
         this.name,
-        this.path,
-        this.minPath
+        Paths.getUploadsAbsolutePath(this.path),
+        Paths.getUploadsAbsolutePath(this.minPath)
     )
 
     image.description = this.description
