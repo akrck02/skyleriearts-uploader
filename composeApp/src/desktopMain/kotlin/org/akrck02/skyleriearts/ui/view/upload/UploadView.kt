@@ -46,7 +46,8 @@ private fun UploadSection(appViewModel: AppViewModel) {
 
     var showImageAddView by remember { mutableStateOf(false) }
     var addedImageList = remember { mutableListOf<File>() }
-    
+
+    // show image add view if needed
     if (showImageAddView) {
         ImageAddView(addedImageList)
         //appViewModel.addFileToResources(path)
@@ -67,15 +68,16 @@ private fun UploadSection(appViewModel: AppViewModel) {
 
         DragComposable(
             text = stringResource(Res.string.dragMessage),
-            onStarted = { if (addedImageList.isEmpty().not()) showImageAddView = true },
+            onStarted = {},
             onDrop = { path ->
-                try {
+                val file = try {
                     ImageManipulationService.getImageFile(path).also { addedImageList.add(it) }
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     null
                 }
+                file
             },
-            onFinish = {}
+            onFinish = { if (addedImageList.isEmpty().not()) showImageAddView = true }
         )
     }
 }

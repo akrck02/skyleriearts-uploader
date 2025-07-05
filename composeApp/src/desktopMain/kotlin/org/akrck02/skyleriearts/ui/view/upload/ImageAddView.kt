@@ -11,26 +11,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ExpandLess
-import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.Save
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerIcon
@@ -39,10 +29,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
+import org.akrck02.skyleriearts.ui.component.input.DropdownMenu
 import org.akrck02.skyleriearts.ui.component.input.IconButton
 import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
-import org.akrck02.skyleriearts.ui.theme.getTextFieldThemeColors
 import org.akrck02.skyleriearts.viewmodel.ImageAddViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import java.io.File
@@ -139,55 +129,15 @@ private fun NewProjectButton() {
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun ProjectSelector(viewModel: ImageAddViewModel) {
-
-    var value by mutableStateOf(viewModel.selectedProject)
-    var expanded by remember { mutableStateOf(false) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = { expanded = it },
-        modifier = Modifier.padding(top = 0.dp).pointerHoverIcon(PointerIcon.Hand),
-    ) {
-        TextField(
-            value = value,
-            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).width(250.dp).pointerHoverIcon(PointerIcon.Hand),
-            readOnly = true,
-            shape = DEFAULT_ROUNDED_SHAPE,
-            onValueChange = { value = it },
-            colors = getTextFieldThemeColors(),
-            trailingIcon = {
-                Icon(
-                    imageVector = if (expanded) Icons.Rounded.ExpandLess else Icons.Rounded.ExpandMore,
-                    tint = MaterialTheme.colorScheme.primary,
-                    contentDescription = "expand more"
-                )
-            }
-        )
-
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
-        ) {
-            viewModel.projects.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = option,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
-                        )
-                    },
-                    onClick = {
-                        viewModel.selectedProject = option
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    modifier = Modifier.pointerHoverIcon(PointerIcon.Hand)
-                )
-            }
+    var value = remember { viewModel.selectedProject }
+    DropdownMenu(
+        options = viewModel.projects,
+        defaultValue = value,
+        onChange = {
+            println("$it selected")
+            value = it
         }
-    }
+    )
 }
 
 @Composable

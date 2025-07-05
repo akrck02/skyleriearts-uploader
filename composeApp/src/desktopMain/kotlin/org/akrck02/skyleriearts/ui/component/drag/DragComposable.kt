@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -32,6 +33,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.unit.dp
+import io.github.vinceglb.filekit.core.FileKit
+import io.github.vinceglb.filekit.core.PickerMode
+import io.github.vinceglb.filekit.core.PickerType
+import kotlinx.coroutines.launch
 import org.akrck02.skyleriearts.ui.theme.DEFAULT_ROUNDED_SHAPE
 import java.io.File
 import java.net.URLDecoder
@@ -51,6 +56,7 @@ fun DragComposable(
     onFinish: () -> Unit = {}
 ) {
 
+    var corroutineScope = rememberCoroutineScope()
     var showTargetBorder by remember { mutableStateOf(false) }
     val dragAndDropTarget = remember {
         object : DragAndDropTarget {
@@ -97,7 +103,27 @@ fun DragComposable(
                 target = dragAndDropTarget
             )
             .pointerHoverIcon(PointerIcon.Hand),
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity)
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = BackgroundOpacity),
+        onClick = {
+
+            corroutineScope.launch {
+
+                // FileKit Core
+                val files = FileKit.pickFile(
+                    type = PickerType.Image,
+                    mode = PickerMode.Multiple(),
+                    title = "Pick an image",
+                )
+
+                if (files.isNullOrEmpty().not()) {
+                    onStarted()
+                    files.forEach { file ->
+                        onDrop(file.path ?: "")
+                    }
+                    onFinish()
+                }
+            }
+        }
     ) {
         Column(
             modifier = Modifier.padding(PaddingValues(80.dp, 20.dp)),
@@ -107,7 +133,6 @@ fun DragComposable(
             TextIconPrimary(text, Icons.Outlined.Image)
         }
     }
-
 
 }
 

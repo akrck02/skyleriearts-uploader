@@ -59,6 +59,11 @@ kotlin {
             // ViewModel support in common code
             implementation(libs.androidx.lifecycle.viewmodel)
 
+            // File picker
+            implementation("io.github.vinceglb:filekit-core:0.8.7")
+            implementation("io.github.vinceglb:filekit-compose:0.8.7")
+
+
         }
 
         desktopMain.dependencies {
@@ -75,9 +80,12 @@ compose.desktop {
         mainClass = "org.akrck02.skyleriearts.MainKt"
 
         nativeDistributions {
+            linux {
+                modules("jdk.security.auth")
+            }
             targetFormats(TargetFormat.Rpm)
             packageName = "org.akrck02.skyleriearts"
-            packageVersion = "1.0.0"
+            packageVersion = "1.1.0"
         }
     }
 }
