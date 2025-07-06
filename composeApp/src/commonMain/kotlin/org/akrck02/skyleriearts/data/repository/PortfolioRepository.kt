@@ -9,7 +9,7 @@ interface PortfolioRepository {
     fun searchCategoriesByName(name: String): Set<String>
     fun getCategoriesOfProject(projectId: String): Set<String>
     fun getCategoriesOfImage(imageId: String): Set<String>
-    
+
     fun deleteCategory(categoryId: String)
     // endregion
 
@@ -33,8 +33,8 @@ interface PortfolioRepository {
     fun updateImage(image: Image)
     fun deleteImage(imageId: String)
 
-    fun moveImageToProject(projectId: String)
-    fun moveImageToCategory(categoryId: String)
+    fun moveImageToProject(imageId: String, projectId: String)
+    fun moveImageToCategory(imageId: String, categoryId: String)
     // endregion
 
 }

@@ -192,34 +192,34 @@ class PortfolioDataAccess : PortfolioRepository {
      * Insert a new image
      */
     override fun insertImage(image: Image) {
-        TODO("Not yet implemented")
+        portfolio.images.put(image.name, image)
     }
 
     /**
      * Update an existing image
      */
     override fun updateImage(image: Image) {
-        TODO("Not yet implemented")
+        portfolio.images.put(image.name, image)
     }
 
     /**
      * Delete an image
      */
     override fun deleteImage(imageId: String) {
-        TODO("Not yet implemented")
+        portfolio.images.remove(imageId)
     }
 
     /**
      * move a image to another project
      */
-    override fun moveImageToProject(projectId: String) {
+    override fun moveImageToProject(imageId: String, projectId: String) {
         TODO("Not yet implemented")
     }
 
     /**
      * move image to another category
      */
-    override fun moveImageToCategory(categoryId: String) {
+    override fun moveImageToCategory(imageId: String, categoryId: String) {
         TODO("Not yet implemented")
     }
 
