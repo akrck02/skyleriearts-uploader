@@ -137,18 +137,19 @@ private fun ImageSurface(
     grayscale: Boolean
 ) {
 
+    var absolutePath = "${data.basePath}/${data.minPath}"
     Surface(
         shape = shape,
         modifier = GalleryImageDefault.surfaceModifier(modifier, shape).pointerHoverIcon(PointerIcon.Hand),
         color = Color.Transparent,
         onClick = onClick,
     ) {
-        if (Files.exists(Path(data.minPath)).not()) {
-            Text("NOT FOUND ${data.minPath}")
+        if (Files.exists(Path(absolutePath)).not()) {
+            Text("NOT FOUND $absolutePath")
             return@Surface
         }
 
-        val bytes = FileService.loadImage(data.minPath)
+        val bytes = FileService.loadImage(absolutePath)
         Image(
             modifier = GalleryImageDefault.imageModifier(round, selected),
             bitmap = bytes,

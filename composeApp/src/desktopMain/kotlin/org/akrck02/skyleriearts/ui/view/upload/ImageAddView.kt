@@ -23,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.akrck02.skyleriearts.extension.getFileDirectory
+import org.akrck02.skyleriearts.extension.getLastUrlSection
 import org.akrck02.skyleriearts.ui.component.gallery.GalleryImage
 import org.akrck02.skyleriearts.ui.component.input.DropdownMenu
 import org.akrck02.skyleriearts.ui.component.input.IconButton
@@ -128,11 +130,14 @@ private fun AddedGalleryPreview(addedImageList: MutableList<File>) {
                     shape = DEFAULT_ROUNDED_SHAPE
                 ) {
                     if (addedImageList.size > i) {
+                        val imageName = addedImageList[i].absolutePath.getLastUrlSection()
+                        val imageDirectory = addedImageList[i].absolutePath.getFileDirectory()
                         GalleryImage(
                             data = org.akrck02.skyleriearts.ui.model.GalleryImage(
                                 name = "",
-                                path = addedImageList[i].absolutePath,
-                                minPath = addedImageList[i].absolutePath
+                                basePath = imageDirectory,
+                                path = imageName,
+                                minPath = imageName
                             ),
                             modifier = Modifier.fillMaxSize().padding(0.dp),
                             onClick = { }

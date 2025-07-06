@@ -12,6 +12,7 @@ import org.akrck02.skyleriearts.data.model.Image
 @Serializable
 data class GalleryImage(
     var name: String,
+    var basePath: String,
     var path: String,
     var minPath: String,
 ) {
@@ -45,13 +46,14 @@ fun GalleryImage.toImage(): Image = Image(
 fun Image.toGalleryImage(): GalleryImage {
     val image = GalleryImage(
         this.name,
-        Paths.getUploadsAbsolutePath(this.path),
-        Paths.getUploadsAbsolutePath(this.minPath)
+        Paths.getUploadsAbsolutePath(),
+        this.path,
+        this.minPath
     )
 
     image.description = this.description
-    image.categories = this.categories
-    image.projects = this.projects
+    image.categories = this.categories.toMutableList()
+    image.projects = this.projects.toMutableList()
     return image
 }
 

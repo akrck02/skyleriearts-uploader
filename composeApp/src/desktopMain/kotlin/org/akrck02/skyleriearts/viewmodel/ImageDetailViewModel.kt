@@ -13,7 +13,7 @@ import java.util.Locale
 class ImageDetailViewModel(val dataAccess: PortfolioDataAccess) : ViewModel() {
 
 
-    var imageData by mutableStateOf(GalleryImage("", "", ""))
+    var imageData by mutableStateOf(GalleryImage("", "", "", ""))
 
     fun addProject(project: String) {
         imageData.projects.addIfNotPresent(project.lowercase(Locale.getDefault()))

@@ -1,6 +1,5 @@
 package org.akrck02.skyleriearts.data.model
 
-import androidx.compose.runtime.mutableStateListOf
 import kotlinx.serialization.Serializable
 
 /**
@@ -16,6 +15,6 @@ data class Image(
 ) {
 
     var description: String = ""
-    var categories: MutableList<String> = mutableStateListOf()
-    var projects: MutableList<String> = mutableStateListOf()
+    var categories: MutableSet<String> = mutableSetOf()
+    var projects: MutableSet<String> = mutableSetOf()
 }

@@ -70,3 +70,13 @@ fun CharSequence.damerauLevenshteinDistance(second: CharSequence): Int {
 
     return distanceMatrix[n + 1][m + 1]
 }
+
+fun String.getLastUrlSection(): String {
+    val slashIndex = this.lastIndexOf("/")
+    return if (-1 != slashIndex) this.substring(slashIndex) else this
+}
+
+fun String.getFileDirectory(): String {
+    val slashIndex = this.lastIndexOf("/")
+    return if (-1 != slashIndex) this.substring(0, slashIndex) else this
+}

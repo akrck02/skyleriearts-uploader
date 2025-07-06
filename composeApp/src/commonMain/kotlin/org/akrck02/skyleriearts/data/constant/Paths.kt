@@ -13,21 +13,21 @@ object Paths {
     /**
      * Get resources path
      */
-    fun getUploadsPath(path: String): String {
+    fun getUploadsPath(path: String = ""): String {
         return "resources/images/upload/$path"
     }
 
     /**
      * Get resources path
      */
-    fun getUploadsAbsolutePath(path: String): String {
+    fun getUploadsAbsolutePath(path: String = ""): String {
         return "$uploadsPath/$path"
     }
 
     /**
      * Get thumbnail path
      */
-    fun getThumbnailsPath(path: String): String {
+    fun getThumbnailsPath(path: String = ""): String {
         return "resources/images/uploads/${path.removeLastSlash()}".replaceFirst(".", "-min.")
     }
 
@@ -35,7 +35,7 @@ object Paths {
     /**
      * Get thumbnail path
      */
-    fun getThumbnailsAbsolutePath(path: String): String {
+    fun getThumbnailsAbsolutePath(path: String = ""): String {
         return "$basePath/resources/images/upload/${path.removeLastSlash()}".replaceFirst(".", "-min.")
     }
 

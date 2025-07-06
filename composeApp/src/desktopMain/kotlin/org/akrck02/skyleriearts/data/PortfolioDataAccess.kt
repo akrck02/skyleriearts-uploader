@@ -8,7 +8,9 @@ import org.akrck02.skyleriearts.data.model.Image
 import org.akrck02.skyleriearts.data.model.Portfolio
 import org.akrck02.skyleriearts.data.repository.PortfolioRepository
 import org.akrck02.skyleriearts.extension.damerauLevenshteinDistance
+import java.io.BufferedWriter
 import java.io.File
+import java.io.FileWriter
 import java.nio.file.Files
 
 class PortfolioDataAccess : PortfolioRepository {
@@ -16,6 +18,7 @@ class PortfolioDataAccess : PortfolioRepository {
     private val maxNameDistance = 10
     private val portfolio = getPortfolioFromDatabase()
 
+    // region database
     /**
      * Get the portfolio from json file
      */
@@ -30,6 +33,18 @@ class PortfolioDataAccess : PortfolioRepository {
         val jsonData = currentFile.readText(Charsets.UTF_8)
         return Json.decodeFromString<Portfolio>(UriCodec.decode(jsonData))
     }
+
+    /**
+     * Save the portfolio in the database
+     */
+    private fun savePortfolio() {
+        BufferedWriter(FileWriter(Paths.galleryFilePath)).use { writer ->
+            writer.write(Json.encodeToString(portfolio))
+        }
+    }
+
+    // endregion
+    // region categories
 
     /**
      * Get all the current categories
@@ -48,21 +63,37 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get categories of a project
      */
-    override fun getCategoriesOfProject(name: String): Set<String> {
-        return portfolio.categories.filter { it.value.contains(name).not() }.map { it.key }.toSet()
+    override fun getCategoriesOfProject(projectId: String): Set<String> {
+        return portfolio.categories.filter { it.value.contains(projectId).not() }.map { it.key }.toSet()
     }
 
     /**
      * Get categories of image
      */
-    override fun getCategoriesOfImage(name: String): Set<String> {
-        val projects = mutableSetOf<String>()
-        portfolio.images[name]?.also {
-            it.projects.forEach { projects.addAll(getCategoriesOfProject(it)) }
+    override fun getCategoriesOfImage(imageId: String): Set<String> {
+        return getImage(imageId)?.categories ?: setOf()
+    }
+
+    /**
+     * Delete a category
+     */
+    override fun deleteCategory(categoryId: String) {
+        TODO("Not yet implemented")
+    }
+
+    private fun removeUnnecessaryCategoriesFromImage(image: Image) {
+
+        val categoriesToDelete = mutableSetOf<String>()
+        image.categories.forEach { categoryId ->
+            val categoryMustBeDeleted = image.projects.none { portfolio.categories[categoryId]?.contains(it) == true }
+            if (categoryMustBeDeleted) categoriesToDelete.add(categoryId)
         }
 
-        return projects
+        categoriesToDelete.forEach { image.categories.remove(it) }
     }
+
+    // endregion
+    // region projects
 
     /**
      * Get projects by name
@@ -76,8 +107,8 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Get projects by category
      */
-    override fun getProjectsByCategory(category: String): Set<String> {
-        return portfolio.categories[category] ?: mutableSetOf()
+    override fun getProjectsByCategory(categoryId: String): Set<String> {
+        return portfolio.categories[categoryId] ?: mutableSetOf()
     }
 
     /**
@@ -88,31 +119,63 @@ class PortfolioDataAccess : PortfolioRepository {
     }
 
     /**
+     * Insert a new project
+     */
+    override fun insertProject(projectId: String, categoryId: String) {
+        val projectsOfCategory = portfolio.categories[categoryId]
+        if (null == projectsOfCategory) {
+            portfolio.categories[categoryId] = mutableSetOf(projectId)
+            return
+        }
+
+        projectsOfCategory.add(projectId)
+    }
+
+    /**
+     * Delete a project
+     */
+    override fun deleteProject(projectId: String) {
+
+        // delete the project from categories it belongs to
+        portfolio.categories.forEach { it.value.remove(projectId) }
+
+        // remove the categories of this project if needed
+        getImagesByProject(projectId).forEach { removeUnnecessaryCategoriesFromImage(it) }
+
+    }
+
+    // endregion
+    // region images
+
+    /**
      * Get image by name
      */
-    override fun getImage(name: String): Image? = portfolio.images[name]
+    override fun getImage(imageId: String): Image? {
+        return portfolio.images[imageId]
+    }
 
     /**
      * Get all the available images
      */
-    override fun getImages(): Set<Image> = portfolio.images.values.toMutableSet()
+    override fun getImages(): Set<Image> {
+        return portfolio.images.values.toMutableSet()
+    }
 
     /**
      * Get all the images of a category
      */
-    override fun getImagesByCategory(category: String): Set<Image> {
-        val projectsOfCategory = portfolio.categories[category] ?: setOf()
+    override fun getImagesByCategory(categoryId: String): Set<Image> {
         return portfolio.images.map { it.value }
-            .filter { it.projects.any { project -> projectsOfCategory.contains(project) } }
+            .filter { it.categories.contains(categoryId) }
             .toMutableSet()
     }
 
     /**
      * Get all the images by project
      */
-    override fun getImagesByProject(project: String): Set<Image> = portfolio.images
+    override fun getImagesByProject(projectId: String): Set<Image> = portfolio.images
         .map { it.value }
-        .filter { it.projects.contains(project) }
+        .filter { it.projects.contains(projectId) }
         .toMutableSet()
 
     /**
@@ -124,4 +187,41 @@ class PortfolioDataAccess : PortfolioRepository {
             .map { it.value }
             .toMutableSet()
     }
+
+    /**
+     * Insert a new image
+     */
+    override fun insertImage(image: Image) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Update an existing image
+     */
+    override fun updateImage(image: Image) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * Delete an image
+     */
+    override fun deleteImage(imageId: String) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * move a image to another project
+     */
+    override fun moveImageToProject(projectId: String) {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     * move image to another category
+     */
+    override fun moveImageToCategory(categoryId: String) {
+        TODO("Not yet implemented")
+    }
+
+    // endregion
 }
