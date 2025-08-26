@@ -6,6 +6,7 @@ import org.akrck02.skyleriearts.viewmodel.CategoryViewModel
 import org.akrck02.skyleriearts.viewmodel.GalleryViewModel
 import org.akrck02.skyleriearts.viewmodel.ImageAddViewModel
 import org.akrck02.skyleriearts.viewmodel.ImageDetailViewModel
+import org.akrck02.skyleriearts.viewmodel.ProjectAddViewModel
 import org.akrck02.skyleriearts.viewmodel.ProjectsViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
@@ -30,6 +31,7 @@ val viewModelModule = module {
     viewModelOf(::GalleryViewModel)
     viewModelOf(::ImageDetailViewModel)
     viewModelOf(::ImageAddViewModel)
+    viewModelOf(::ProjectAddViewModel)
 }
 
 // add data access here

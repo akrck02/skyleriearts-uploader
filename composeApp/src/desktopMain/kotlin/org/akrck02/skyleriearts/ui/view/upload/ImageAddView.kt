@@ -17,7 +17,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +41,16 @@ import kotlin.math.max
 
 @Composable
 fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel = koinViewModel()) {
+
+    var openNewProjectView by remember { mutableStateOf(false) }
+
+    if (openNewProjectView) {
+        ProjectAddView(
+            onClose = { openNewProjectView = false }
+        )
+        return
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +96,7 @@ fun ImageAddView(addedImageList: MutableList<File>, viewModel: ImageAddViewModel
             data = IconButtonBasicData(
                 icon = Icons.Rounded.Add,
                 description = "Create a new one",
-                onClick = {}
+                onClick = { openNewProjectView = true }
             )
         )
 

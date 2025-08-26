@@ -21,6 +21,7 @@ import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.akrck02.skyleriearts.ui.theme.MIN_ROUNDED_SHAPE
 import org.akrck02.skyleriearts.ui.theme.TOTAL_ROUNDED_SHAPE
 
 /**
@@ -50,12 +51,13 @@ fun IconButton(
     data: IconButtonData,
     modifier: Modifier = Modifier.width(50.dp),
     iconModifier: Modifier = Modifier.width(50.dp),
-    contentPadding: PaddingValues = PaddingValues(10.dp)
+    contentPadding: PaddingValues = PaddingValues(10.dp),
+    rounded: Boolean = true
 ) {
     Button(
         onClick = data.onClick,
         colors = colors,
-        shape = TOTAL_ROUNDED_SHAPE,
+        shape = if (rounded) TOTAL_ROUNDED_SHAPE else MIN_ROUNDED_SHAPE,
         border = null,
         elevation = null,
         contentPadding = contentPadding,
