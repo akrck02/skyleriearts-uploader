@@ -21,7 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,7 +35,7 @@ import org.akrck02.skyleriearts.ui.component.input.IconButtonBasicData
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 fun TagContainer(
-    title: String = "Title",
+    title: String = "",
     tags: MutableList<String>,
     icons: ImageVector = Icons.Rounded.Tag,
     contentDescription: String = "",
@@ -45,9 +44,6 @@ fun TagContainer(
     onAdd: () -> Unit = {},
     onRemove: (String) -> Unit = {}
 ) {
-
-    val keys: MutableList<String> = remember { mutableListOf() }
-    keys.addAll(tags)
 
     Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {
 
@@ -60,24 +56,26 @@ fun TagContainer(
                 contentColor = MaterialTheme.colorScheme.primary
             )
 
-            Text(
-                title,
-                fontSize = 1.8.em,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
-            )
-
-            if (interactable) {
-                IconButton(
-                    colors = colors,
-                    contentPadding = PaddingValues(5.dp),
-                    data = IconButtonBasicData(
-                        icon = Icons.Rounded.Edit,
-                        description = "Add",
-                        onClick = { onAdd() }
-                    )
+            if ("" != title) {
+                Text(
+                    title,
+                    fontSize = 1.8.em,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
                 )
+
+                if (interactable) {
+                    IconButton(
+                        colors = colors,
+                        contentPadding = PaddingValues(5.dp),
+                        data = IconButtonBasicData(
+                            icon = Icons.Rounded.Edit,
+                            description = "Add",
+                            onClick = { onAdd() }
+                        )
+                    )
+                }
             }
         }
 
@@ -99,7 +97,7 @@ fun TagContainer(
                 verticalArrangement = Arrangement.Top,
                 horizontalArrangement = Arrangement.Start
             ) {
-                items(items = keys, key = { it }) {
+                items(items = tags, key = { it }) {
 
                     FilterChip(
                         selected = false,
