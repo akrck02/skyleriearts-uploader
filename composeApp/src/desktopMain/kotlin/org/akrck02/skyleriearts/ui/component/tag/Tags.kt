@@ -42,7 +42,7 @@ fun TagContainer(
     emptyText: String = "No elements found.",
     interactable: Boolean = false,
     onAdd: () -> Unit = {},
-    onRemove: (String) -> Unit = {}
+    onRemove: (String) -> Unit = {},
 ) {
 
     Column(modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp)) {

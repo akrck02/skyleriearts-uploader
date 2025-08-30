@@ -80,4 +80,36 @@ fun MaterialAlertInputDialog(
 }
 
 
+@Composable
+fun CustomMaterialAlertInputDialog(
+    title: String = "Title",
+    cancelText: String = "Cancel",
+    onClose: () -> Unit = {},
+    content: @Composable () -> Unit = {}
+) {
+    AlertDialog(
+        title = { Text(title) },
+        text = { content() },
+        confirmButton = {},
+        dismissButton = {
+            Button(
+                onClick = onClose,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+                modifier = Modifier.pointerHoverIcon(PointerIcon.Hand),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 0.dp,
+                    hoveredElevation = 2.dp
+                ),
+                shape = DEFAULT_ROUNDED_SHAPE
+            ) { Text(cancelText) }
+        },
+        containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        onDismissRequest = onClose,
+        modifier = Modifier.padding(10.dp)
+    )
+}
+
+
+
+
 

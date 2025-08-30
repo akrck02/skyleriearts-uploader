@@ -69,12 +69,14 @@ fun IconButton(
 fun IconButtonLarge(
     colors: ButtonColors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
     data: IconButtonData,
+    modifier: Modifier = Modifier.height(60.dp),
+    rounded: Boolean = true
 ) {
     Button(
         onClick = data.onClick,
         colors = colors,
-        shape = ButtonDefaults.elevatedShape,
-        modifier = Modifier.height(60.dp).pointerHoverIcon(PointerIcon.Hand)
+        shape = if (rounded) ButtonDefaults.elevatedShape else MIN_ROUNDED_SHAPE,
+        modifier = modifier.height(60.dp).pointerHoverIcon(PointerIcon.Hand)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically

@@ -13,7 +13,6 @@ class ProjectAddViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewMo
     var name by mutableStateOf("")
     var projectCategories = mutableStateListOf<String>()
     var globalCategories = mutableStateListOf<String>()
-    var selectedCategory by mutableStateOf("")
     // endregion state
 
     init {
@@ -22,11 +21,14 @@ class ProjectAddViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewMo
 
     fun loadCategories() {
         globalCategories.addAll(portfolioDataAccess.getCategories().sorted())
-        selectedCategory = globalCategories.firstOrNull() ?: ""
     }
 
-    fun suputamadre(silksong: String) {
-        projectCategories.add(silksong)
+    fun saveCurrentProject() {
+        projectCategories.forEach { portfolioDataAccess.insertProject(name, it) }
+        portfolioDataAccess.savePortfolio()
+        portfolioDataAccess.print()
+        name = ""
+        projectCategories.clear()
+        loadCategories()
     }
-
 }

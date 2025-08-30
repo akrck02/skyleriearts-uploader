@@ -37,7 +37,7 @@ class PortfolioDataAccess : PortfolioRepository {
     /**
      * Save the portfolio in the database
      */
-    private fun savePortfolio() {
+    fun savePortfolio() {
         BufferedWriter(FileWriter(Paths.galleryFilePath)).use { writer ->
             writer.write(Json.encodeToString(portfolio))
         }
@@ -224,4 +224,14 @@ class PortfolioDataAccess : PortfolioRepository {
     }
 
     // endregion
+
+    fun print() {
+
+        portfolio.categories.forEach { category, projects -> println("$category $projects") }
+        println()
+
+        portfolio.images.forEach { _, image -> println("$image") }
+        println()
+
+    }
 }
