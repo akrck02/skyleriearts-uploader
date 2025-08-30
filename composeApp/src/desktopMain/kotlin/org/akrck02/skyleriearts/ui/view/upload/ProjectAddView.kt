@@ -14,6 +14,7 @@ import androidx.compose.material.TextFieldDefaults.BackgroundOpacity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.rounded.ArrowBackIosNew
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.ButtonDefaults
@@ -145,27 +146,48 @@ fun ProjectAddView(viewModel: ProjectAddViewModel = koinViewModel(), onClose: ()
                 color = MaterialTheme.colorScheme.primary,
                 fontSize = 16.sp
             )
-            return
         }
 
-        // Action button
-        IconButton(
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                contentColor = MaterialTheme.colorScheme.primary
-            ),
-            data = IconButtonBasicData(
-                icon = Icons.Rounded.Check,
-                description = "Okay",
-                onClick = {
-                    viewModel.saveCurrentProject()
-                    onClose()
-                }
-            ),
-            modifier = Modifier.padding(start = 10.dp)
-        )
-    }
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(top = 20.dp)
+        ) {
 
+            IconButton(
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    contentColor = MaterialTheme.colorScheme.primary
+                ),
+                data = IconButtonBasicData(
+                    icon = Icons.Rounded.ArrowBackIosNew,
+                    description = "Back",
+                    onClick = {
+                        viewModel.clear()
+                        onClose()
+                    }
+                ),
+                modifier = Modifier.padding(start = 10.dp)
+            )
+
+            if (error.isBlank()) {
+                IconButton(
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                        contentColor = MaterialTheme.colorScheme.primary
+                    ),
+                    data = IconButtonBasicData(
+                        icon = Icons.Rounded.Check,
+                        description = "Okay",
+                        onClick = {
+                            viewModel.saveCurrentProject()
+                            onClose()
+                        }
+                    ),
+                    modifier = Modifier.padding(start = 10.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -201,7 +223,7 @@ private fun CategoryCards(viewModel: ProjectAddViewModel) {
     var categories = remember { viewModel.projectCategories }
     Row(
         horizontalArrangement = Arrangement.Center,
-        modifier = Modifier.padding(top = 10.dp, bottom = 30.dp)
+        modifier = Modifier.padding(top = 10.dp, bottom = 10.dp)
     ) {
 
         categories.forEach { category ->

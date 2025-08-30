@@ -27,8 +27,12 @@ class ProjectAddViewModel(val portfolioDataAccess: PortfolioDataAccess) : ViewMo
         projectCategories.forEach { portfolioDataAccess.insertProject(name, it) }
         portfolioDataAccess.savePortfolio()
         portfolioDataAccess.print()
+        clear()
+        loadCategories()
+    }
+
+    fun clear() {
         name = ""
         projectCategories.clear()
-        loadCategories()
     }
 }
